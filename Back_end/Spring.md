@@ -23,3 +23,75 @@ spring은 경량 컨테이너로 자바 객체를 직접 spring 안에서 관리
 스프링 부트(Spring Boot)는 스프링(Spring)을 더 쉽게 이용하기 위한 도구라고 볼 수 있다. 스프링 이용하여 개발을 할 때, 이것저것 세팅을 해야 될 요소들이 많다. 여러가지를 세팅해야되는 진입 장벽이 존재하여 Spring 을 처음 배우려는 사람들은 중도에 그만두는 경우가 많다고 한다. Spring Boot는 매우 간단하게 프로젝트를 설정할 수 있게 하여, Spring 개발을 조금 더 쉽게 만들어주는 역할을 하고 있다.
 
 
+## View 환경설정
+#### Welcome Page 만들기
+```
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charst-8" />
+
+</head>
+<body>
+Hello
+<a href="/hello">hello</a>
+</body>
+</html>
+```
+
+
+코드 실행
+:<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charst-8" />
+
+</head>
+<body>
+Hello
+<a href="/hello">hello</a>
+</body>
+</html>
+
+
+
+#### thymeleaf 템플릿 엔진
+```
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="'안녕하세요. ' + ${data}" >안녕하세요. 손님</p>
+</body>
+</html>
+```
+
+
+코드실행
+:<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="'안녕하세요. ' + ${data}" >안녕하세요. 손님</p>
+</body>
+</html>
+
+참고: `spring-boot-devtools` 라이브러리를 추가하면, `html` 파일을 컴파일만 해주면 서버 재시작 없이 View 파일 변경이 가능하다.
+
+
+
+## 빌드하고 실행하기
+
+1.`./gradlew build`<br>
+2.`cd build/libs`<br>
+3.`java -jar hello-spring-0.0.1-SNAPSHOT.jar`<br>
+4.실행 확인
+
