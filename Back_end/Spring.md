@@ -1,4 +1,4 @@
-## spring
+## Spring
 
 #### 1.1 스프링의 개념
 스프링은 자바 기반의 웹 어플리케이션을 만들 수 있는 프레임워크이다.
@@ -42,18 +42,7 @@ Hello
 
 
 코드 실행
-:<!DOCTYPE HTML>
-<html>
-<head>
-    <title>Hello</title>
-    <meta http-equiv="Content-Type" content="text/html; charst-8" />
-
-</head>
-<body>
-Hello
-<a href="/hello">hello</a>
-</body>
-</html>
+:http://localhost:8080
 
 
 
@@ -73,16 +62,7 @@ Hello
 
 
 코드실행
-:<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>hello</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<p th:text="'안녕하세요. ' + ${data}" >안녕하세요. 손님</p>
-</body>
-</html>
+:http://localhost:8080/hello
 
 참고: `spring-boot-devtools` 라이브러리를 추가하면, `html` 파일을 컴파일만 해주면 서버 재시작 없이 View 파일 변경이 가능하다.
 
@@ -95,3 +75,50 @@ Hello
 3.`java -jar hello-spring-0.0.1-SNAPSHOT.jar`<br>
 4.실행 확인
 
+
+
+## 정적 컨텐츠
+
+
+```<!DOCTYPE HTML>
+<html>
+<head>
+    <title>static content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+정적 컨텐츠 입니다.
+</body>
+</html>
+```
+
+코드실행
+:http://localhost:8080/hello-static.html
+
+
+## MVC와 템플릿 엔진
+ MVC : Model, View, Controller
+ #### *Controller*
+```
+@GetMapping("hello-mvc")
+    public String helloMvc(@RequestParam("name") String name, Model model){
+        model.addAttribute("name", name);
+        return "hello-template";
+    }
+```
+
+
+ #### *View*
+```
+<html xmlns:th="http://.thymeleaf.org">
+<body>
+<p th:text="'hello ' + ${name}">hello! empty</p>
+</body>
+</html>
+```
+
+
+코드 실행
+:http://localhost:8080/hello-mvc?name=spring
+
+## API
