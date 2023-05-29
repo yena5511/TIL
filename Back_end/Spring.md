@@ -122,3 +122,54 @@ Hello
 :http://localhost:8080/hello-mvc?name=spring
 
 ## API
+
+#### @ResponseBody 문자변환
+```
+@GetMapping("hello-string")
+    @ResponseBody
+    public String helloString(@RequestParam("name") String name){
+        return "hello" + name;
+    }
+```
+
+코드 실행
+:http://localhost:8080/hello-string?name=spring
+
+
+#### @ResponseBody 객체 변환
+```
+    @GetMapping("hello-api")
+    @ResponseBody
+    public Hello helloApi(@RequestParam("name") String name){
+        Hello hello = new Hello();
+        hello.setName(name);
+        return hello;
+    }
+
+    static class Hello{
+        private String name;
+
+        public String getName(){
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+```
+코드 실행
+:http://localhost:8080/hello-api?name=spring
+
+
+- @ResponseBody를 사용 
+    - HTTP의 BODY에 문자 내용을 직접 반환
+    - `viewResolver` 대신에 `HttpMessageConverter`가 동작
+    - 기본 문자처리 : `StringHttMessageConverter`
+    - 기본 객체처리:
+    `MappingJackson2HttpMessageConverter`
+    - byte 처리 등등 기타 여러 `HttpMessageConverter`가 기본으로 등록되어 있음
+
+    
+참고: 클라이언트의 HTTP Accept 헤더와 서버의 컨트롤러 반환 타입 정보 들을 조합해서 `HttpMessageConverter`가 선택된다.
+
