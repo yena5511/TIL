@@ -354,3 +354,121 @@ class MemoryMemberRepositoryTest {
 
 }
 ```
+
+## 회원 서비스 개발
+
+```
+import exam.Spring.domain.Member;
+import exam.Spring.repository.MemberRepository;
+import exam.Spring.repository.MemoryMemberRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public class MemberService {
+
+    private final MemberRepository memberRepository = new MemoryMemberRepository();
+
+    /**
+     * 회원가입
+     */
+    public Long join(Member member) {
+        validateDuplicateMember(member);//중복 회원 검증
+        memberRepository.save(member);
+        return member.getId();
+    }
+    public void validateDuplicateMember(Member member){
+        memberRepository.findByName(member.getName())
+                .ifPresent(m -> {
+                    throw new IllegalStateException("이미 존재하는 회원입니다.");
+                });
+
+    }
+
+
+    /**
+     * 전체회원 조회
+     */
+    public List<Member> findMembers(){
+        return memberRepository.findAll();
+    }
+
+    public Optional<Member> findOne(Long memberId){
+        return memberRepository.findByID(memberId);
+    }
+
+}
+```
+
+
+## 회원 서비스 테스트
+
+```
+class MemberServiceTest {
+
+    MemberService memberService;
+    MemoryMemberRepository memberRepository ;
+
+    @BeforeEach
+    public void beforEach(){
+        memberRepository = new MemoryMemberRepository();
+        memberService = new MemberService(memberRepository);
+    }
+
+    @AfterEach
+    public void afterEach(){
+        memberRepository.clearStore();
+    }
+
+    @Test
+    void 회원가입() {
+        //given
+        Member member = new Member();
+        member.setName("hello");
+
+        //when
+        Long saveId = memberService.join(member);
+
+        //then
+        Member findMember = memberService.findOne(saveId).get();
+        org.assertj.core.api.Assertions.assertThat(member.getName()).isEqualTo(findMember.getName());
+    }
+
+    @Test
+    public void 중복_회원_예외(){
+        //given
+        Member member1 = new Member();
+        member1.setName("spring");
+
+        Member member2 = new Member();
+        member2.setName("spring");
+
+        //when
+        memberService.join(member1);
+        IllegalStateException e = assertThrows(IllegalStateException.class, () -> memberService.join(member2));
+        org.assertj.core.api.Assertions.assertThat(e. getMessage()).isEqualTo(("이미 존재하는 회원입니다."));
+
+
+
+//        try {
+//            memberService.join(member2);
+//            fail();
+//        } catch (IllegalStateException e){
+//            org.assertj.core.api.Assertions.assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
+//
+//        }
+
+        //then
+    }
+
+    @Test
+    void findMembers() {
+
+
+    }
+
+    @Test
+    void findOne() {
+    }
+}
+```
