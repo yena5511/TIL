@@ -670,6 +670,89 @@ public class MemberController {
 ```
 
 
+```public class MemberForm {
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+}
+```
+
+
+```
+@Controller
+public class MemberController {
+
+    private final MemberService memberService;
+
+    @Autowired
+    public MemberController(MemberService memberService){
+        this.memberService = memberService;
+    }
+
+    @GetMapping("/members/new")
+    public String createForm(){
+        return "member/createMemberForm";
+
+    }
+    @PostMapping("/members/new")
+    public String create(MemberForm form){
+        Member member = new Member();
+        member.setName(form.getName());
+
+        memberService.join(member);
+
+        return "redirect:/";
+    }
+
+}
+```
+
 
 ## 회원 웹 기능 - 조회
+*회원 컨트롤러에서 조회 기능*
+```
+    @GetMapping("/members")
+    public String list(Model model){
+        List<Member> members = memberService.findMembers();
+        model.addAttribute("members", members);
+        return "members/memberList";
+    }
+    ```
 
+
+*회원 리스프 HTML*
+
+```
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf,org">
+<body>
+
+<div class="Container">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이름</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each = "member : ${members}">
+                <td th:text = "${member.id}></td>
+                <td th:text = "${member.name}></td>
+"
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
+```
