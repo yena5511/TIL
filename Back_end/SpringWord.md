@@ -89,4 +89,12 @@ Value Objec는 값 속성이 개별적으로 변하지 않고 값 자체로 고�
 #### @GetMapping
 - @RequestMapping(method = RequestMehtod.GET)의 축약형으로써, 어노테이션만 보고 무슨 메소드 요청인지 바로 알아볼 수 있다.
 - @GetMapping은 요청 URL을 어떠한 메서드가 처리할 지 매핑한다.
-- Controller 내부에서 URI 경로를 지정하는 역할도 한다.
+- Controller 내부에서 URI 경로를 지하정는 역할도 한다.
+
+
+
+#### Factory
+:  특정 오브젝트를 요구하면서 오브젝트를 생성하거나 가져오는 방식을 신경쓰지 않도록 중간에서 역할하는 오브젝트
+
+
+#### 

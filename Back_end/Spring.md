@@ -706,7 +706,7 @@ public class MemberController {
 
 ```
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf,org">
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
 
 <div class="Container">

@@ -96,3 +96,122 @@ public class CalculatorDemo1 {
     - 인스턴스를 생성할 필요가 없는 값을 클래스에 저장하고 싶은 경우
     - 값의 변경 사항을 모든 인스턴스가 공유해야 하는 경우
 
+
+
+#### 클래스 메소드
+
+
+클래스 메소드를 사용하는 이유 : 
+메소드가 인스턴스 변수를 참조하지 않는다면 클래스 메소드를 사용해서 불필요한 인스턴스의 생성을 막을 수 있다.
+
+
+```
+package org.opentutorials.javatutorials.classninstance;
+ 
+class Calculator3{
+  
+    public static void sum(int left, int right){
+        System.out.println(left+right);
+    }
+     
+    public static void avg(int left, int right){
+        System.out.println((left+right)/2);
+    }
+}
+ 
+public class CalculatorDemo3 {
+     
+    public static void main(String[] args) {
+        Calculator3.sum(10, 20);
+        Calculator3.avg(10, 20);
+         
+        Calculator3.sum(20, 40);
+        Calculator3.avg(20, 40);
+    }
+ 
+}
+```
+
+
+#### 맴버타입의 비교
+
+
+1. 인스턴스 메소드는 클래스 맴버에 접근 할 수 있다.
+2. 클래스 메소드는 인스턴스 맴버에 접근 할 수 없다.
+ - 클래스는 메소드 보다 먼저 존재
+ -인스턴스 변수는 인스턴스가 만들어지면서 생성되는데, 클래스 메소드는 인스턴스가 생성되기 전에 만들어지기 때문에 클래스 메소드가 인스턴스 맴버에 접근하는 것은 존재하지 않는 인스턴스 변수에 접근하는 것과 같다.
+ 
+ 예제
+ ```
+ package org.opentutorials.javatutorials.classninstance;
+ 
+class C1{
+    static int static_variable = 1;
+    int instance_variable = 2;
+    static void static_static(){
+        System.out.println(static_variable);
+    }
+    static void static_instance(){
+        // 클래스 메소드에서는 인스턴스 변수에 접근 할 수 없다. 
+        //System.out.println(instance_variable);
+    }
+    void instance_static(){
+        // 인스턴스 메소드에서는 클래스 변수에 접근 할 수 있다.
+        System.out.println(static_variable);
+    }
+    void instance_instance(){        
+        System.out.println(instance_variable);
+    }
+}
+public class ClassMemberDemo {  
+    public static void main(String[] args) {
+        C1 c = new C1();
+        // 인스턴스를 이용해서 정적 메소드에 접근 -> 성공
+        // 인스턴스 메소드가 정적 변수에 접근 -> 성공
+        c.static_static();
+        // 인스턴스를 이용해서 정적 메소드에 접근 -> 성공
+        // 정적 메소드가 인스턴스 변수에 접근 -> 실패
+        c.static_instance();
+        // 인스턴스를 이용해서 인스턴스 메소드에 접근 -> 성공
+        // 인스턴스 메소드가 클래스 변수에 접근 -> 성공
+        c.instance_static();
+        // 인스턴스를 이용해서 인스턴스 메소드에 접근 -> 성공 
+        // 인스턴스 메소드가 인스턴스 변수에 접근 -> 성공
+        c.instance_instance();
+        // 클래스를 이용해서 클래스 메소드에 접근 -> 성공
+        // 클래스 메소드가 클래스 변수에 접근 -> 성공
+        C1.static_static();
+        // 클래스를 이용해서 클래스 메소드에 접근 -> 성공
+        // 클래스 메소드가 인스턴스 변수에 접근 -> 실패
+        C1.static_instance();
+        // 클래스를 이용해서 인스턴스 메소드에 접근 -> 실패
+        //C1.instance_static();
+        // 클래스를 이용해서 인스턴스 메소드에 접근 -> 실패
+        //C1.instance_instance();
+    }
+ 
+}
+```
+
+`용어`<br>
+
+인스턴스 변수 -> Non-Static Field<br>
+클래스 변수 -> Static Field<br>
+필드(field)라는 것은 클래스 전역에서 접근 할 수 있는 변수를 의미
+
+
+
+## 유효범위
+
+
+#### 유효범위란?
+
+변수와 메소드 같은 것들을 사용할 수 있는 것은 이름이 있기 때문이다. 아래 코드에서 left는 변수의 이름이고, sum은 메소드의 이름이다.
+
+```
+int left;blic void sum(){}
+```
+
+프로그램이 커지면 여러 가지 이유로 이름이 `충돌`하게 된다. 이를 해결하기 위해서 고안된 것이 유효범위라는 개념이다. 흔히 `스코프(Scope)`라고도 부른다.
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
