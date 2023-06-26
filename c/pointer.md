@@ -224,3 +224,65 @@ int main() {
 	printf("%s", temp);
 }
 ```
+
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<string.h>
+
+int main() {
+	//1. 영어 단어들을 저장하는 포인터 배열 선언
+	char* dic[] = { "dog", "lion", "fox", "horse", "tiger", "raccoon", "bear", "dolphin", "elephant" };
+
+	//2. 랜덤한 단어 하나 선택해서 word 포인터 변수에 저장
+	srand(time(NULL));
+	int num = rand() % (sizeof(dic) / sizeof(dic[0]));
+	char* word = dic[num];
+	//printf("%s\n", word);
+
+	//3. word 포인터 변수가 가리키는 단어의 길이를 len 변수에 저장
+	//ex. lion -> 4를 len에 저장
+	int len = strlen(word);
+
+	//4. 포인터 변수 pword를 선언하여 동적 메모리 할당 + 데이터를 모두 '-'로 채우기
+	//ex. lion일 경우 --> _ _ _ _로 채우기 (띄어쓰기 제외)
+	char* pword; //포인터를 선언하여 동적 메모리 주소로 사용
+	pword = malloc(sizeof(char) * (len + 1));//동적 메모리 할당받은 메모리는 배열처럼 사용 가능
+	for (int i = 0; i < len; i++) {
+		pword[i] = '_';
+	}
+	//단어 마지막 끝에 null문자 넣기
+	pword[len] = '\0';
+
+
+	int cnt = 0;  //카운터 변수
+	int user = 0; //
+	char ch; // 사용자 문자 하나 입력받은 변수
+	printf("\n<< 행맨 게임 만들기>>\n\n");
+
+	while (1) {
+        if (!strcmp(word, pword))
+        {
+            printf("\n%d번만에 성공!", cnt);
+            free(pword);
+            return 0;
+        }
+		cnt++;
+		printf("\n 현재 문자 출력 : %s\n", pword);
+		printf("문자 한 개 입력 : ");
+		scanf("%c", &ch);
+		rewind(stdin);//입력 버퍼 초기화 fflush(stdin);
+
+		// 행맨 게임 알고리즘 찍기(반복문 사용)
+        for (int i = 0; i < len; i++)
+        {
+            if (word[i] == ch)
+            {
+                pword[i] = ch;
+            }
+        }
+	}
+
+}
+```
