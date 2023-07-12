@@ -37,7 +37,35 @@
 - 게시물 리스프 페이지에서 페이징 처리
 
 
+## 게시판 무작정 따라하기 - 프로젝트 생성
 
+```java
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password=123456
+spring.datasource.url=jdbc:mariadb://localhost:3306/board
+logging.level.org.springframework=debug
+logging.level.org.springframework.web=debug
+```
 
+```java
+package com.study.board.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class BoardController {
+
+    @GetMapping("/")
+    @ResponseBody
+    public String main(){
+
+        return "Hello World";
+    }
+
+}
+
+```
 
