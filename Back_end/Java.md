@@ -1,3 +1,105 @@
+## 메소드
+
+- 반복문, 조건문, 변수, 상수와 같은 것들은 프로그램을 만드는 가장 중요한 도구들이라고 할 수 있다.
+- 메소드나 객체지향과 같은 개념들은 애플리케이션을 만들기 위한 기법들이라고 할 수 있다.
+
+##### 메소드
+ 메소드는 코드를 재사용 할 수 있게 해준다. 
+
+ #### 메소드 형식
+ ```java
+ public static void main(String[] args){
+    return
+ }
+ ```
+
+#### 메소드의 정의(define)와 호출(call)
+![](https://s3.ap-northeast-2.amazonaws.com/opentutorials-user-file/module/516/1835.gif)
+#### main
+
+- 자바와 개발자 사이의 약속
+- main 메소드를 작성하고, 자바는 main 메소드를 실행하는 관계라고 할 수 있다.
+
+
+#### 메소드가 없다면
+
+```java
+package org.opentutorials.javatutorials.method;
+
+public class MethodDemo2 {
+     
+    public static void main(String[] args) {
+        int i = 0;
+        while(i<10){
+            System.out.println(i);
+            i++;
+        }
+         
+        i = 0;
+        while(i<10){
+            System.out.println(i);
+            i++;
+        }
+         
+        i = 0;
+        while(i<10){
+            System.out.println(i);
+            i++;
+        }
+         
+        i = 0;
+        while(i<10){
+            System.out.println(i);
+            i++;
+        }
+         
+        i = 0;
+        while(i<10){
+            System.out.println(i);
+            i++;
+        }
+    }
+ 
+}
+```
+*메소드 사용*
+```java
+package org.opentutorials.javatutorials.method;
+ 
+public class MethodDemo3 {
+    public static void numbering() {
+        int i = 0;
+        while (i < 10) {
+            System.out.println(i);
+            i++;
+        }
+    }
+ 
+    public static void main(String[] args) {
+        numbering();
+        numbering();
+        numbering();
+        numbering();
+        numbering();
+    }
+}
+```
+- 코드의 량을 줄일 수 있다.
+- 유지보수가 유리
+
+#### 입력과 출력
+
+- 외부의 자극이 입력이면 반응은 출력이라고 할 수 있다.
+- 메소드는 항상 똑같은 동작만 반복한다.
+
+#### 매개변수와 인자
+
+![](https://s3.ap-northeast-2.amazonaws.com/opentutorials-user-file/module/516/1838.gif)
+- int limit = 매개변수
+- numbering **(5)** = 인자
+
+
+
 ## 객체지향 프로그래밍(Object-Oriented Programming)<br>
 ● 객체지향 프로그래밍은 좀 더 나은 프로그램을 만들기 위한 프로그래밍 패러다임으로 로직을 상태(state)와 행위(behave)로 이루어진 객체로 만드는 것이다. 
 #### 객체<br>
@@ -265,6 +367,9 @@ public class ScopeDemo4 {
 #### 상속의 개념
 
 - 어떤 객체가 있을 때 그  객체의 필드(변수)와 메소드를 다른 객체가 물려 받을 수 있는 기능을 상속이라고 한다.
+
+
+
 
 
 
