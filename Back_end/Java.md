@@ -98,6 +98,91 @@ public class MethodDemo3 {
 - int limit = 매개변수
 - numbering **(5)** = 인자
 
+#### return 
+
+메소드 밖으로 돌려준다.
+
+```java
+package org.opentutorials.javatutorials.method;
+ 
+public class MethodDemo6 {
+    public static String numbering(int init, int limit) {
+        int i = init;
+        // 만들어지는 숫자들을 output이라는 변수에 담기 위해서 변수에 빈 값을 주었다.
+        String output = "";
+        while (i < limit) {
+            // 숫자를 화면에 출력하는 대신 변수 output에 담았다.
+            output += i;
+            i++;
+        }
+        // 중요!!! output에 담겨 있는 문자열을 메소드 외부로 반환하려면 아래와 같이 return 키워드 뒤에 반환하려는 값을
+        // 배치하면 된다.
+        return output;
+    }
+ 
+    public static void main(String[] args) {
+        // 메소드 numbering이 리턴한 값이 변수 result에 담긴다.
+        String result = numbering(1, 5);
+        // 변수 result의 값을 화면에 출력한다.
+        System.out.println(result);
+    }
+}
+```
+
+- 복잡하게 데이터를 리턴하는 이유는 무엇일까?
+    - 부품으로서의 가치를 높이기 위해서
+
+
+```java
+package org.opentutorials.javatutorials.method;
+ 
+import java.io.*; // 무시
+ 
+public class MethodDemo7 {
+    public static String numbering(int init, int limit) {
+        int i = init;
+        String output = "";
+        while (i < limit) {
+            output += i;
+            i++;
+        }
+        return output;
+    }
+ 
+    public static void main(String[] args) {
+        String result = numbering(1, 5);
+        System.out.println(result);
+        try { // 무시
+            // 다음 행은 out.txt 라는 파일에 numbering이라는 메소드가 반환한 값을 저장합니다.
+            BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"));
+            out.write(result);
+            out.close();
+        } catch (IOException e) {
+        } // 무시
+    }
+}
+```
+
+#### 복수의 리턴
+
+- 메소드는 여러 개의 입력 값을 가질 수 있다.
+
+```java
+package org.opentutorials.javatutorials.method;
+ 
+public class ReturnDemo4 {
+ 
+    public static String[] getMembers() {
+        String[] members = { "최진혁", "최유빈", "한이람" };
+        return members;
+    }
+ 
+    public static void main(String[] args) {
+        String[] members = getMembers();
+    }
+ 
+}
+```
 
 
 ## 객체지향 프로그래밍(Object-Oriented Programming)<br>
