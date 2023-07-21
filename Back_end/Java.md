@@ -184,6 +184,67 @@ public class ReturnDemo4 {
 }
 ```
 
+## 입력과 출력
+
+#### String[] args
+
+```java
+package org.opentutorials.javatutorials.io;
+ 
+class InputDemo{
+    public static void main(String[] args){
+        System.out.println(args.length);
+    }
+}
+```
+
+- String[] = 문자열을 답을 수 있는 배열
+
+- void = 출력값 x
+
+- String[] args =  메소드가 호출될 때 전달된 입력 값을 메소드 내부로 전달하는 역할을 하는 변수 
+
+- args.length = 배열의 길이 
+
+
+```java
+class InputForeachDemo{
+    public static void main(String[] args){
+        for(String e : args){
+            System.out.println(e);
+        }
+    }
+}
+```
+- 메소드 main의 인자 String[] args를 통해서 사용자가 입력한 값을 전달하고 있다.
+
+
+#### 앱이 실행중에 입력 받기
+
+- 자바에서 기본적으로 제공하는 라이브러리 중에 scanner을 이용하면 쉽게 사용자의 입력을 잡을 수 있다. 
+
+```java
+package org.opentutorials.javatutorials.io;
+ 
+import java.util.Scanner;
+ 
+public class ScannerDemo {
+ 
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int i = sc.nextInt();
+        System.out.println(i*1000);
+        sc.close();
+    }
+ 
+}
+```
+
+- import java.util.Scanner = 로직으로 사용
+
+- System,in = 사용자가 입력한 값
+
+
 
 ## 객체지향 프로그래밍(Object-Oriented Programming)<br>
 ● 객체지향 프로그래밍은 좀 더 나은 프로그램을 만들기 위한 프로그래밍 패러다임으로 로직을 상태(state)와 행위(behave)로 이루어진 객체로 만드는 것이다. 
