@@ -311,34 +311,50 @@ public class Scanner2Demo {
 
 ## 클래스와 인스턴스 그리고 객체
 
-#### 은닉화, 캡슐화 
-: 내부의 동작 방법을 단단한 케이스(객체) 안으로 숨기고 사용자에게는 그 부품의 사용방법(메소드)만을 노출하고 있는 것이다.
+##### 클래스와 인스턴스 이전의 프로그래밍
 
-#### 클래스
-:연관되어 있는 변수와 메소드의 집합이다.
-- 필요한 이유 
-    - 프로그래밍의 기본은 중복을 제거한다
+- 클래스 = 객체를 만들기 위한 설계도
+- 인스턴스 = 구체적인 제품
 
-
- #### 인스턴스
- ■ 문법 형태 : Calculator c1 = new Calculator();
-
-
-```
-public class Main {
-    public static void main(String[] args) {
-Calculator c1 = new Calculator();
-c1.setOprands(10, 20);
-c1.sum();       
-c1.avg();       
+**중복되는 코드**
+```java
+package org.opentutorials.javatutorials.object;
  
-Calculator c2 = new Calculator();
-c2.setOprands(20, 40);
-c2.sum();       
-c2.avg();
+public class CalculatorDemo {
+ 
+    public static void main(String[] args) {
+        // 아래의 로직이 1000줄 짜리의 복잡한 로직이라고 가정하자.
+        System.out.println(10 + 20);
+        System.out.println(20 + 40);
     }
+ 
 }
 ```
+#### 메소드화
+
+```java
+package org.opentutorials.javatutorials.object;
+ 
+public class CalculatorDemo2 {
+ 
+    public static void sum(int left, int right) {
+        System.out.println(left + right);
+    }
+ 
+    public static void main(String[] args) {
+        sum(10, 20);
+        sum(20, 40);
+    }
+ 
+}
+```
+refactoring: 기존의 있었던 코드와 정확하게 동작하지만 코드를 더 효율적으로 만든 행위 
+
+- 코드의 양을 줄일 수 있다
+- 문제가 생겼을 때 원인을 더 쉽게 찾을 수 있다
+
+
+
 
 ## 클래스 맴버와 인스턴스 맴버
 
