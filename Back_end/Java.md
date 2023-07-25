@@ -433,4 +433,46 @@ public class CalculatorDemo4 {
 #### 클래스
 
 
-- 메소드의 집합 = 객체
+- 메소드의 집합 = 객체(작은 프로그램)
+
+- 클래스는 연관되어 있는 변수와 메소드의 집합이다
+
+#### 인스턴스
+
+```java
+Calculator c1 = new Calculator();
+```
+- new Calculator()은 클래스 Calculator를 구체적인 제품으로 만드는 명령
+- 만들어진 구체적인 제품을 인스턴스(instance)
+    - 클래스 : 설계도
+    - 인스턴스 : 제품
+
+```java
+Calculator c1
+```
+
+- 클래스를 만든다는 것은 사용자 정의 데이터 타입을 만드는 것과 같은 의미
+
+- 클래스를 인스턴스화 할 때는 변수에 담아야 한다는 것과 이 때 사용하는 변수의 데이터 타입은 그 클래스가 된다
+
+```java
+public void setOprands(int left, int right){
+    this.left = left;
+    this.right = right;
+}
+```
+
+- this는 클래스를 통해서 만들어진 인스턴스 자신을 가리킨다
+-  메소드 밖에서 선언한 변수는 인스턴스 내의 모든 메소드에서 접근이 가능하다
+
+
+![](https://s3.ap-northeast-2.amazonaws.com/opentutorials-user-file/module/516/1878.gif)
+
+- Caculator = 클래스(설계도)
+
+- c1, c2 = 인스턴스(설계도에 따라 만들어진 구체적인 제품)
+
+-  변수 = 상태
+-  메소드 = 행동
+
+-  하나의 클래스를 바탕으로 서로 다른 상태를 가진 인스턴스를 만들면 서로 다른 행동을 하게 된다는 것을 알 수 있다
