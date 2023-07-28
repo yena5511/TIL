@@ -9,6 +9,8 @@
 - 구조화 질의 언어
 - 도메인 특화 언어
 
+## Lesson 1. SELECT 전반 기능 훑어보기
+
 **1.테이블의 모든 내용 보기<BR>**
  *(asterisk)는 테이블의 모든 컬럼을 뜻합니다.
 
@@ -125,3 +127,123 @@ ORDER BY CustomerName
 LIMIT 0, 5;
 
  ```
+
+ ## Lesson 2. 각종 연산자들
+
+
+**1.사칙연산**
+
+|연산자|의미|
+|:---|:---|
+|+,-,*,/|각각 더하기, 빼기, 곱하기, 나누기|
+|%, MOD|나머지|
+
+```sql
+SELECT 1 + 2;
+```
+
+```sql
+SELECT 5 - 2.5 AS DIFFERENCE;
+```
+
+```sql
+SELECT 3 * (2 + 4) / 2, 'Hello';
+```
+
+```sql
+SELECT 10 % 3;
+```
+
+*문자열에 사칙연산을 가하면 0으로 인식*
+
+```sql
+SELECT 'ABC' + 3;
+```
+![](https://cdn.discordapp.com/attachments/1083231554521813105/1134373215024726077/125bb982f109a68f.png)
+```sql
+SELECT 'ABC' * 3;
+```
+![](https://cdn.discordapp.com/attachments/1083231554521813105/1134373232196210698/248ba80417ff6c17.png)
+```sql
+SELECT '1' + '002' * 3;
+
+-- 숫자로 구성된 문자열은 숫자로 자동인식
+```
+![](https://cdn.discordapp.com/attachments/1083231554521813105/1134373267461914725/2023-07-28_135140.png)
+```sql
+SELECT
+	OrderID, ProductID,
+    OrderID + ProductID AS SUM
+FROM OrderDetails;
+```
+
+```sql
+SELECT
+  ProductName,
+  Price / 2 AS HalfPrice
+FROM Products;
+```
+
+**2.참/거짓 관련 연산자**
+
+```SQL
+SELECT TRUE, FALSE;
+```
+```SQL
+SELECT !TRUE, NOT 1, !FALSE, NOT FALSE;
+```
+💡 MySQL에서는 TRUE는 1, FALSE는 0으로 저장된다
+```SQL
+SELECT 0 = TRUE, 1 = TRUE, 0 = FALSE, 1 = FALSE;
+```
+
+```SQL
+SELECT * FROM Customers WHERE TRUE;
+```
+
+```SQL
+SELECT * FROM Customers WHERE FALSE;
+```
+
+|연산자|의미|
+|:---|:---|
+|IS|양쪽이 모두 TRUE 또는 FALSE|
+|IS NOT|한쪽은 TRUE. 한쪽은 FALSE|
+
+```SQL
+SELECT TRUE IS TRUE;
+```
+```SQL
+SELECT TRUE IS NOT FALSE;
+```
+```SQL
+SELECT (TRUE IS FALSE) IS NOT TRUE;
+```
+
+|연산자|의미|
+|:---|:---|
+|AND, &&|양쪽이 모두 TRUE일 때만 TRUE|
+|OR, ㅣㅣ|한쪽이 TRUE면 TRUE|
+
+```SQL
+SELECT TRUE AND FALSE, TRUE OR FALSE;
+```
+```SQL
+SELECT 2 + 3 = 6 OR 2 * 3 = 6;
+```
+```SQL
+SELECT * FROM Orders
+WHERE
+  CustomerId = 15 AND EmployeeId = 4;
+```
+```SQL
+SELECT * FROM Products 
+WHERE
+  ProductName = 'Tofu' OR CategoryId = 8;
+```
+```SQL
+SELECT * FROM OrderDetails
+WHERE
+  ProductId = 20
+  AND (OrderId = 10514 OR Quantity = 50);
+```
