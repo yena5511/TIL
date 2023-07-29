@@ -247,3 +247,135 @@ WHERE
   ProductId = 20
   AND (OrderId = 10514 OR Quantity = 50);
 ```
+
+|연산자|의미|
+|:---|:---|
+|=|양쪽 값이 같음|
+|!=, <>|양쪽 값이 다름|
+|>, <|(왼쪽, 오른쪽) 값이 더 큼|
+|>=, <=|(왼쪽, 오른쪽)값이 같거나 더 큼|
+
+```SQL
+SELECT 1 = 1, !(1 <> 1), NOT (1 < 2), 1 > 0 IS NOT FALSE;
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1134813577597947967/2023-07-29_203259.png)
+```SQL
+SELECT 'A' = 'A', 'A' != 'B', 'A' < 'B', 'A' > 'B';
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1134813577954476043/2023-07-29_203359.png)
+```SQL
+SELECT 'Apple' > 'Banana' OR 1 < 2 IS TRUE;
+```
+
+❗ MySQL의 기본 사칙연산자는 대소문자 구분을 하지 않습니다.
+```SQL
+SELECT 'A' = 'a';
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1134813578248081428/2023-07-29_203439.png)
+
+```SQL
+SELECT
+  ProductName, Price,
+  Price > 20 AS EXPENSIVE 
+FROM Products;
+```
+💡 테이블의 컬럼이 아닌 값으로 선택하기. 
+```SQL
+SELECT
+  ProductName, Price,
+  NOT Price > 20 AS CHEAP 
+FROM Products;
+```
+
+|연산자|의미|
+|:---|:---|
+|BETWEEN{MIN} AND {MAX}|두 값 사이에 있음|
+|NOT BETWEEN{MIN} AND {MAX}|두 값 사이가 아닌 곳에 있음|
+
+```SQL
+SELECT 5 BETWEEN 1 AND 10;
+```
+```SQL
+SELECT 'banana' NOT BETWEEN 'Apple' AND 'camera';
+```
+```SQL
+SELECT * FROM OrderDetails
+WHERE ProductID BETWEEN 1 AND 4;
+```
+```SQL
+SELECT * FROM Customers
+WHERE CustomerName BETWEEN 'b' AND 'c';
+```
+
+|연산자|의미|
+|:---|:---|
+|IN(...)|괄호 안의 값들 가운데 있음|
+|NOT IN(...)|괄호 안의 값들 가운데 없음|
+
+```SQL
+SELECT 1 + 2 IN (2, 3, 4) 
+```
+```SQL
+SELECT 'Hello' IN (1, TRUE, 'hello') 
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1134813578533290024/2023-07-29_203923.png)
+```SQL
+SELECT * FROM Customers
+WHERE City IN ('Torino', 'Paris', 'Portland', 'Madrid') 
+```
+
+|연산자|의미|
+|:---|:---|
+|LIKE'...%...'|0~N개 문자를 가진 패턴|
+|LIKE'..._....'|_갯수만큼의 문자를 가진 패턴|
+
+```SQL
+SELECT
+  'HELLO' LIKE 'hel%',
+  'HELLO' LIKE 'H%',
+  'HELLO' LIKE 'H%O',
+  'HELLO' LIKE '%O',
+  'HELLO' LIKE '%HELLO%',
+  'HELLO' LIKE '%H',
+  'HELLO' LIKE 'L%'
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1134813578835284008/2023-07-29_204123.png)
+```SQL
+SELECT
+  'HELLO' LIKE 'HEL__',
+  'HELLO' LIKE 'h___O',
+  'HELLO' LIKE 'HE_LO',
+  'HELLO' LIKE '_____',
+  'HELLO' LIKE '_HELLO',
+  'HELLO' LIKE 'HEL_',
+  'HELLO' LIKE 'H_O'
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1134813579112091680/2023-07-29_204307.png)
+```SQL
+SELECT * FROM Employees
+WHERE Notes LIKE '%economics%'
+```
+```SQL
+SELECT * FROM OrderDetails
+WHERE OrderID LIKE '1025_'
+```
+
+**총정리**
+|연산자|의미|
+|:---|:---|
+|+,-,*,/|각각 더하기, 빼기, 곱하기, 나누기|
+|%, MOD|나머지|
+|IS|양쪽이 모두 TRUE 또는 FALSE|
+|IS NOT|한쪽은 TRUE. 한쪽은 FALSE|
+|AND, &&|양쪽이 모두 TRUE일 때만 TRUE|
+|OR, ㅣㅣ|한쪽이 TRUE면 TRUE|
+|=|양쪽 값이 같음|
+|!=, <>|양쪽 값이 다름|
+|>, <|(왼쪽, 오른쪽) 값이 더 큼|
+|>=, <=|(왼쪽, 오른쪽)값이 같거나 더 큼|
+|BETWEEN{MIN} AND {MAX}|두 값 사이에 있음|
+|NOT BETWEEN{MIN} AND {MAX}|두 값 사이가 아닌 곳에 있음|
+|IN(...)|괄호 안의 값들 가운데 있음|
+|NOT IN(...)|괄호 안의 값들 가운데 없음|
+|LIKE'...%...'|0~N개 문자를 가진 패턴|
+|LIKE'..._....'|_갯수만큼의 문자를 가진 패턴|
