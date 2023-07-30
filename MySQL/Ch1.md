@@ -379,3 +379,109 @@ WHERE OrderID LIKE '1025_'
 |NOT IN(...)|괄호 안의 값들 가운데 없음|
 |LIKE'...%...'|0~N개 문자를 가진 패턴|
 |LIKE'..._....'|_갯수만큼의 문자를 가진 패턴|
+
+## Lesson 3. 숫자와 문자열을 다루는 함수들
+
+**1.숫자 관련 함수들**
+
+|함수|설명|
+|:---|:---|
+|ROUND|반올림|
+|CEIL|올림|
+|FLOOR|내림|
+
+```SQL
+SELECT 
+  ROUND(0.5),
+  CEIL(0.4),
+  FLOOR(0.6);
+```
+```SQL
+SELECT 
+  Price,
+  ROUND(price),
+  CEIL(price),
+  FLOOR(price)
+FROM Products;
+```
+
+|함수|설명|
+|:---|:---|
+|ABS|절댓값|
+
+```SQL
+SELECT ABS(1), ABS(-1), ABS(3 - 10);
+```
+```SQL
+SELECT * FROM OrderDetails
+WHERE ABS(Quantity - 10) < 5;
+```
+
+|함수|설명|
+|:---|:---|
+|GREATEST|(괄호 안에서)가장 큰 값|
+|LEAST|(괄호 안에서) 가장 작은 값|
+```SQL
+SELECT 
+  GREATEST(1, 2, 3),
+  LEAST(1, 2, 3, 4, 5);
+```
+```SQL
+SELECT
+  OrderDetailID, ProductID, Quantity,
+  GREATEST(OrderDetailID, ProductID, Quantity),
+  LEAST(OrderDetailID, ProductID, Quantity)
+FROM OrderDetails;
+```
+
+💡 그룹 함수 - 조건에 따라 집계된 값을 가져옵니다.
+|함수|설명|
+|:---|:---|
+|MAX|가장 큰 값|
+|MIN|가장 작은 값|
+|COUNT|갯수 (NULL값 제외)|
+|SUM|총합|
+|AVG|평균 값|
+
+```SQL
+SELECT
+  MAX(Quantity),
+  MIN(Quantity),
+  COUNT(Quantity),
+  SUM(Quantity),
+  AVG(Quantity)
+FROM OrderDetails
+WHERE OrderDetailID BETWEEN 20 AND 30;
+```
+
+|함수|설명|
+|POW(A, B), POWER(A, B)|A를 B만틈 제곱|
+|SQRT|제곱근|
+```SQL
+SELECT
+  POW(2, 3),
+  POWER(5, 2),
+  SQRT(16);
+```
+```SQL
+SELECT Price, POW(Price, 1/2)
+FROM Products
+WHERE SQRT(Price) < 4;
+```
+
+|함수|설명|
+|:---|:---|
+|TRUNCATE(N, n)|N을 소숫점 n자리까지 선택|
+```SQL
+SELECT
+  TRUNCATE(1234.5678, 1),
+  TRUNCATE(1234.5678, 2),
+  TRUNCATE(1234.5678, 3),
+  TRUNCATE(1234.5678, -1),
+  TRUNCATE(1234.5678, -2),
+  TRUNCATE(1234.5678, -3);
+```
+```SQL
+SELECT Price FROM Products
+WHERE TRUNCATE(Price, 0) = 12;
+```
