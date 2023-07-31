@@ -485,3 +485,173 @@ SELECT
 SELECT Price FROM Products
 WHERE TRUNCATE(Price, 0) = 12;
 ```
+
+**2. 문자열 관련 함수들**
+
+|함수|설명|
+|:---|:---|
+|UCASE, UPPER|모두 대문자로|
+|LCASE, LOWER|모두 소문자|
+
+```SQL
+SELECT
+  UPPER('abcDEF'),
+  LOWER('abcDEF');
+```
+```SQL
+SELECT
+  UCASE(CustomerName),
+  LCASE(ContactName)
+FROM Customers;
+```
+
+|함수|설명|
+|:---|:---|
+|CONCAT(...)|괄호 안의 내용을 이어붙임|
+|CONCAT_WS(S, ...)|괄호 안의 내용 S로 이어붙음|
+
+```SQL
+SELECT CONCAT('HELLO', ' ', 'THIS IS ', 2021)
+```
+```SQL
+SELECT CONCAT_WS('-', 2021, 8, 15, 'AM')
+```
+```SQL
+SELECT CONCAT('O-ID: ', OrderID) FROM Orders;
+```
+```SQL
+SELECT
+  CONCAT_WS(' ', FirstName, LastName) AS FullName
+FROM Employees;
+```
+
+|함수|설명|
+|:---|:---|
+|SUBSTR, SUBSTRING|주어진 값에 따라 문자열 자름|
+|LEFT|왼쪽부터 N글자|
+|RIGHT|오른쪽부터 N글자|
+
+```SQL
+SELECT
+  SUBSTR('ABCDEFG', 3),
+  SUBSTR('ABCDEFG', 3, 2),
+  SUBSTR('ABCDEFG', -4),
+  SUBSTR('ABCDEFG', -4, 2);
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1135466394364952606/2023-07-31_144131.png)
+```SQL
+SELECT
+  LEFT('ABCDEFG', 3),
+  RIGHT('ABCDEFG', 3);
+```
+```SQL
+SELECT
+  OrderDate,
+  LEFT(OrderDate, 4) AS Year,
+  SUBSTR(OrderDate, 6, 2) AS Month,
+  RIGHT(OrderDate, 2) AS Day
+FROM Orders;
+```
+
+|함수|설명|
+|:---|:---|
+|LENGTH|문자열의 바이트 길이|
+|CHAR_LENGTH, CHARACTER_LEGNTH|문자열의 문자 길이|
+
+```SQL
+SELECT
+  LENGTH('ABCDE'),
+  CHAR_LENGTH('ABCDE'),
+  CHARACTER_LENGTH('ABCDE');
+```
+```SQL
+-- w3wchool 사이트에서는 한글이 제대로 동작하지 않습니다.
+SELECT
+  LENGTH('안녕하세요'), -- 15
+  CHAR_LENGTH('안녕하세요'), -- 5
+  CHARACTER_LENGTH('안녕하세요'); -- 5
+```
+
+|함수|설명|
+|:---|:---|
+|TRIM|양쪽 공백 제거|
+|LTRIM|왼쪽 공백 제거|
+|RTRIM|오른쪽 공백 제거|
+
+```SQL
+SELECT
+  CONCAT('|', ' HELLO ', '|'),
+  CONCAT('|', LTRIM(' HELLO '), '|'),
+  CONCAT('|', RTRIM(' HELLO '), '|'),
+  CONCAT('|', TRIM(' HELLO '), '|');
+```
+```SQL
+SELECT * FROM Categories
+WHERE CategoryName = ' Beverages '
+```
+```SQL
+SELECT * FROM Categories
+WHERE CategoryName = TRIM(' Beverages ')
+```
+
+|함수|설명|
+|:---|:---|
+|LPAD(S, N, P)|S가 N글자가 될 때까지 P를 이어붙임|
+|RPAD(S, N, P)|S가 N글자가 될 때까지 P를 이어붙임|
+
+```SQL
+SELECT
+  LPAD('ABC', 5, '-'),
+  RPAD('ABC', 5, '-');
+```
+```SQL
+SELECT
+  LPAD(SupplierID, 5, 0),
+  RPAD(Price, 6, 0)
+FROM Products;
+```
+
+|함수|설명|
+|:---|:---|
+|REPLACE(S, A, B)|S중 A를 B로 변경|
+```SQL
+SELECT
+  REPLACE('맥도날드에서 맥도날드 햄버거를 먹었다.', '맥도날드', '버거킹');
+```
+```SQL
+SELECT
+  REPLACE(Description, ', ', ' and ')
+FROM Categories;
+```
+
+|함수|설명|
+|:---|:---|
+|INSTR(S, s)|S중 s의 첫 위치 반환, 앖을 시 0|
+```SQL
+SELECT
+  INSTR('ABCDE', 'ABC'),
+  INSTR('ABCDE', 'BCDE'),
+  INSTR('ABCDE', 'C'),
+  INSTR('ABCDE', 'DE'),
+  INSTR('ABCDE', 'F');
+```
+```SQL
+SELECT * FROM Customers
+WHERE INSTR(CustomerName, ' ') BETWEEN 1 AND 6;
+-- < 6으로 하면?
+```
+
+|함수|설명|
+|CAST(A AS T)|A를 T 자료형으로 변환|
+|CONVERT(A, T)|A를 T 자료형으로 변환|
+
+```SQL
+SELECT
+  '01' = '1',
+  CAST('01' AS DECIMAL) = CAST('1' AS DECIMAL);
+```
+```SQL
+SELECT
+  '01' = '1',
+  CONVERT('01', DECIMAL) = CONVERT('1', DECIMAL);
+```
