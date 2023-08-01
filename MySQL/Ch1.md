@@ -655,3 +655,256 @@ SELECT
   '01' = '1',
   CONVERT('01', DECIMAL) = CONVERT('1', DECIMAL);
 ```
+
+## Lesson 4. 시간/날짜 관련 및 기타 함수들
+
+#### 1. 시간/날짜 관련 함수들
+|함수|설명|
+|:---|:---|
+|CURRENT_DATE, CURDATE|현재 날짜 반환|
+|CURRENT_TIME, CURTIM|현재 시간 반환|
+|CURRENT_TIMETAMP, NOW|현재 시간과 날짜 반환|
+```SQL
+SELECT CURDATE(), CURTIME(), NOW();
+```
+
+|함수|설명|
+|:---|:---|
+|DATE|문자열에 따라 날짜 생성|
+|TIME|문자열에 따라 시간 생성|
+
+```SQL
+SELECT
+  '2021-6-1' = '2021-06-01',
+  DATE('2021-6-1') = DATE('2021-06-01'),
+  '1:2:3' = '01:02:03',
+  TIME('1:2:3') = TIME('01:02:03');
+```
+```SQL
+SELECT
+  '2021-6-1 1:2:3' = '2021-06-01 01:02:03',
+  DATE('2021-6-1 1:2:3') = DATE('2021-06-01 01:02:03'),
+  TIME('2021-6-1 1:2:3') = TIME('2021-06-01 01:02:03'),
+  DATE('2021-6-1 1:2:3') = TIME('2021-06-01 01:02:03'),
+  DATE('2021-6-1') = DATE('2021-06-01 01:02:03'),
+  TIME('2021-6-1 1:2:3') = TIME('01:02:03');
+```
+```SQL
+SELECT * FROM Orders
+WHERE
+  OrderDate BETWEEN DATE('1997-1-1') AND DATE('1997-1-31');
+```
+
+|함수|설명|
+|:---|:---|
+|YEAR|주어진 DATETIME값의 년도 반환|
+|MONTHNAME|주어진 DATETIME값의 월(영문) 반환|
+|MONTH|주어진 DATETIME값의 월 반환|
+|WEEKDAY|주어진 DATETIME값의 요일값 반환(월요일: 0)|
+|DAYNAME|주언진 DATETIME값의 요일명 반환|
+|DAYOFMONTH, DAY|주어진 DATETIME값의 날짜(일) 반환|
+
+```SQL
+SELECT
+  OrderDate,
+  YEAR(OrderDate) AS YEAR,
+  MONTHNAME(OrderDate) AS MONTHNAME,
+  MONTH(OrderDate) AS MONTH,
+  WEEKDAY(OrderDate) AS WEEKDAY,
+  DAYNAME(OrderDate) AS DAYNAME,
+  DAY(OrderDate) AS DAY
+FROM Orders;
+```
+```SQL
+SELECT
+  OrderDate,
+  CONCAT(
+    CONCAT_WS(
+      '/',
+      YEAR(OrderDate), MONTH(OrderDate), DAY(OrderDate)
+    ),
+    ' ',
+    UPPER(LEFT(DAYNAME(OrderDate), 3))
+  )
+FROM Orders;
+```
+```SQL
+SELECT * FROM Orders
+WHERE WEEKDAY(OrderDate) = 0;
+```
+
+|함수|설명|
+|:---|:---|
+|HOUR|주어진 DATETIME의 시 반환|
+|MINUTE|주어진 DATETIME의 분 반환|
+|SECOND|주어진 DATETIME의 초 반환|
+
+```SQL
+SELECT
+  HOUR(NOW()), MINUTE(NOW()), SECOND(NOW());
+```
+
+|함수|설명|
+|:---|:---|
+|ADDDATE, DATE_ADD|시간/날짜 더하기|
+|SURDATE, DATE_SUB|
+
+```SQL
+SELECT 
+  ADDDATE('2021-06-20', INTERVAL 1 YEAR),
+  ADDDATE('2021-06-20', INTERVAL -2 MONTH),
+  ADDDATE('2021-06-20', INTERVAL 3 WEEK),
+  ADDDATE('2021-06-20', INTERVAL -4 DAY),
+  ADDDATE('2021-06-20', INTERVAL -5 MINUTE),
+  ADDDATE('2021-06-20 13:01:12', INTERVAL 6 SECOND);
+```
+```SQL
+SELECT
+  OrderDate,
+  ADDDATE(OrderDate, INTERVAL 1 YEAR),
+  ADDDATE(OrderDate, INTERVAL -2 MONTH),
+  ADDDATE(OrderDate, INTERVAL 3 WEEK),
+  ADDDATE(OrderDate, INTERVAL -4 DAY),
+  ADDDATE(OrderDate, INTERVAL -5 MINUTE)
+FROM Orders;
+```
+
+|함수|설명|
+|:---|:---|
+|DATE_DIFF|두 시간/날짜 간 일수차|
+|TIME_DIFF|두 시간/날짜 간 시간차|
+
+```SQL
+SELECT
+  OrderDate,
+  NOW(),
+  DATEDIFF(OrderDate, NOW())
+FROM Orders;
+```
+```SQL
+SELECT
+  TIMEDIFF('2021-06-21 15:20:35', '2021-06-21 16:34:41');
+```
+```SQL
+SELECT * FROM Orders
+WHERE
+  ABS(DATEDIFF(OrderDate, '1996-10-10')) < 5;
+```
+
+|함수|설명|
+|:---|:---|
+|LAST_DAY|해당 달의 마지막 날짜|
+
+```SQL
+SELECT
+  OrderDate,
+  LAST_DAY(OrderDate),
+  DAY(LAST_DAY(OrderDate)),
+  DATEDIFF(LAST_DAY(OrderDate), OrderDate)
+FROM Orders;
+```
+
+|함수|설명|
+|:---|:---|
+|DATE_FORMAT|시간/날짜를 지정한 형식으로 반환|
+
+|함수|설명|
+|:---|:---|
+|%Y|년도 4자리|
+|%y|년도 2자리|
+|%M|월 영문|
+|%m|월 숫자|
+|%D|일 영문(1st, 2nd, 3rd...)|
+|%d, %e|일 숫자(01 ~ 31)|
+|%T|hh:mm:ss|
+|%r|hh:mm:ss AM/PM|
+|%H, %K|시 (~23)|
+|%h, %l|시 (~12)|
+|%i|분|
+|%S, %s|초|
+|%p|AM/PM|
+
+```SQL
+SELECT
+  DATE_FORMAT(NOW(), '%M %D, %Y %T'),
+  DATE_FORMAT(NOW(), '%y-%m-%d %h:%i:%s %p'),
+  DATE_FORMAT(NOW(), '%Y년 %m월 %d일 %p %h시 %i분 %s초');
+```
+```SQL
+SELECT REPLACE(
+  REPLACE(
+    DATE_FORMAT(NOW(), '%Y년 %m월 %d일 %p %h시 %i분 %초'),
+    'AM', '오전'
+  ),
+  'PM', '오후'
+)
+```
+
+|함수|설명|
+|:---|:---|
+|STR_TO_DATE(S, F)|S를 F형식으로 해석하여 시간/날짜 생성|
+
+```SQL
+SELECT
+  DATEDIFF(
+    STR_TO_DATE('2021-06-04 07:48:52', '%Y-%m-%d %T'),
+    STR_TO_DATE('2021-06-01 12:30:05', '%Y-%m-%d %T')
+  ),
+  TIMEDIFF(
+    STR_TO_DATE('2021-06-04 07:48:52', '%Y-%m-%d %T'),
+    STR_TO_DATE('2021-06-01 12:30:05', '%Y-%m-%d %T')
+  );
+```
+```SQL
+SELECT
+  OrderDate,
+  DATEDIFF(
+    STR_TO_DATE('1997-01-01 13:24:35', '%Y-%m-%d %T'),
+    OrderDate
+  ),
+  TIMEDIFF(
+    STR_TO_DATE('1997-01-01 13:24:35', '%Y-%m-%d %T'),
+    STR_TO_DATE(CONCAT(OrderDate, ' ', '00:00:00'), '%Y-%m-%d %T')
+  )
+FROM Orders;
+```
+
+#### 2.기타 함수들
+
+|형식|설명|
+|:---|:---|
+|IF(조건, T, F)|조건이 참이라면 T, 거짓이면 F 반환|
+
+```SQL
+SELECT IF (1 > 2, '1은 2보다 크다.', '1은 2보다 작다.');
+```
+💡 보다 복잡한 조건은 CASE문을 사용합니다.
+```SQL
+SELECT
+CASE
+  WHEN -1 > 0 THEN '-1은 양수다.'
+  WHEN -1 = 0 THEN '-1은 0이다.'
+  ELSE '-1은 음수다.'
+END;
+```
+```SQL
+SELECT
+  Price,
+  IF (Price > 30, 'Expensive', 'Cheap'),
+  CASE
+    WHEN Price < 20 THEN '저가'
+    WHEN Price BETWEEN 20 AND 30 THEN '일반'
+    ELSE '고가'
+  END
+FROM Products;
+```
+
+|형식|설명|
+|:---|:---|
+|IFNULL(A, B)|A가 NULL일 시 B 출력|
+
+```SQL
+SELECT
+  IFNULL('A', 'B'),
+  IFNULL(NULL, 'B');
+```
