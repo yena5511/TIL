@@ -908,3 +908,153 @@ SELECT
   IFNULL('A', 'B'),
   IFNULL(NULL, 'B');
 ```
+## LESSON 5. 조건에 따라 그룹으로 묶기
+
+**1-3 복습 - 💡 그룹 함수**
+
+⭐ NULL값은 집계하지 않습니다.
+
+|함수|설명|
+|:---|:---|
+|MAX|가장 큰 값|
+|MIN|가장 작은 값|
+|COUNT|갯수(NULL값 제외)|
+|SUM|총합|
+|AVG|평균값|
+
+#### 1. GROUP BY - 조건에 따라 집계된 값을 가져옵니다.
+
+```SQL
+SELECT Country FROM Customers
+GROUP BY Country;
+```
+```SQL
+SELECT CategoryID FROM Products
+GROUP BY CategoryID;
+```
+💡 여러 컬럼을 기준으로 그룹화할 수도 있습니다.
+
+```SQL
+SELECT 
+  Country, City,
+  CONCAT_WS(', ', City, Country)
+FROM Customers
+GROUP BY Country, City;
+```
+**📚 그룹 함수 활용하기**
+
+```SQL
+SELECT
+  COUNT(*), OrderDate
+FROM Orders
+GROUP BY OrderDate;
+```
+```SQL
+SELECT
+  ProductID,
+  SUM(Quantity) AS QuantitySum
+FROM OrderDetails
+GROUP BY ProductID
+ORDER BY QuantitySum DESC;
+```
+```SQL
+SELECT
+  CategoryID,
+  MAX(Price) AS MaxPrice, 
+  MIN(Price) AS MinPrice,
+  TRUNCATE((MAX(Price) + MIN(Price)) / 2, 2) AS MedianPrice,
+  TRUNCATE(AVG(Price), 2) AS AveragePrice
+FROM Products
+GROUP BY CategoryID;
+```
+```SQL
+SELECT 
+  CONCAT_WS(', ', City, Country) AS Location,
+  COUNT(CustomerID)
+FROM Customers
+GROUP BY Country, City;
+```
+
+**💡 WITH ROLLUP - 전체의 집계값**
+
+```SQL
+SELECT
+  Country, COUNT(*)
+FROM Suppliers
+GROUP BY Country
+WITH ROLLUP;
+```
+
+- 위의 각 집계함수 쿼리 끝에 WITH ROLLUP 을 추가해보세요.
+- ⚠️ ORDER BY 와는 함께 사용될 수 없습니다.
+
+**HAVING - 그룹화된 데이터 걸러내기**
+
+```SQL
+SELECT
+  Country, COUNT(*) AS Count
+FROM Suppliers
+GROUP BY Country
+HAVING Count >= 3;
+```
+
+**💡 WHERE는 그룹하기 전 데이터, HAVING은 그룹 후 집계에 사용합니다.**
+
+```SQL
+SELECT
+  COUNT(*) AS Count, OrderDate
+FROM Orders
+WHERE OrderDate > DATE('1996-12-31')
+GROUP BY OrderDate
+HAVING Count > 2;
+```
+```SQL
+SELECT
+  CategoryID,
+  MAX(Price) AS MaxPrice, 
+  MIN(Price) AS MinPrice,
+  TRUNCATE((MAX(Price) + MIN(Price)) / 2, 2) AS MedianPrice,
+  TRUNCATE(AVG(Price), 2) AS AveragePrice
+FROM Products
+WHERE CategoryID > 2
+GROUP BY CategoryID
+HAVING
+  AveragePrice BETWEEN 20 AND 30
+  AND MedianPrice < 40;
+```
+
+#### 2. DISTINCT - 중복된 값들을 제거합니다.
+
+- GROUP BY와 달리 집계함수가 사용되지 않습니다.
+- GROUP BY와 달리 정렬하지 않으므로 더 빠릅니다.
+
+```SQL
+SELECT DISTINCT CategoryID
+FROM Products;
+-- 위의 GROUP BY를 사용한 쿼리와 결과 비교
+```
+```SQL
+SELECT COUNT DISTINCT CategoryID
+FROM Products;
+-- 오류 발생
+```
+```SQL
+SELECT DISTINCT Country
+FROM Customers
+ORDER BY Country;
+```
+```SQL
+SELECT DISTINCT Country, City
+FROM Customers
+ORDER BY Country, City;
+```
+
+**💡 GROUP BY와 DISTINCT 함께 활용하기**
+
+```SQL
+SELECT
+  Country,
+  COUNT(DISTINCT CITY)
+FROM Customers
+GROUP BY Country;
+```
