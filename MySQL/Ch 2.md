@@ -259,3 +259,75 @@ FROM Employees E1
 CROSS JOIN Employees E2
 ORDER BY E1.EmployeeID;
 ```
+
+## Lesson 3. UNION - 집합으로 다루기
+
+
+|연산자|설명|
+|:---|:---|
+|UNION|중복을 제거한 집합|
+|UNION ALL|중복을 제거하지 않은 집합|
+
+```SQL
+SELECT CustomerName AS Name, City, Country, 'CUSTOMER'
+FROM Customers
+UNION
+SELECT SupplierName AS Name, City, Country, 'SUPPLIER'
+FROM Suppliers
+ORDER BY Name;
+```
+
+**합집합**
+![](https://www.yalco.kr/images/lectures/sql/2-3/01.png)
+
+```SQL
+SELECT CategoryID AS ID FROM Categories
+WHERE CategoryID > 4
+UNION
+SELECT EmployeeID AS ID FROM Employees
+WHERE EmployeeID % 2 = 0;
+
+-- UNION ALL로 바꿔볼 것
+```
+
+**교집합**
+![](https://www.yalco.kr/images/lectures/sql/2-3/02.png)
+
+```SQL
+SELECT CategoryID AS ID
+FROM Categories C, Employees E
+WHERE 
+  C.CategoryID > 4
+  AND E.EmployeeID % 2 = 0
+  AND C.CategoryID = E.EmployeeID;
+```
+
+**차집합**
+![](https://www.yalco.kr/images/lectures/sql/2-3/03.png)
+
+```SQL
+SELECT CategoryID AS ID
+FROM Categories
+WHERE 
+  CategoryID > 4
+  AND CategoryID NOT IN (
+    SELECT EmployeeID
+    FROM Employees
+    WHERE EmployeeID % 2 = 0
+  );
+```
+
+**대칭차집합**
+
+![](https://www.yalco.kr/images/lectures/sql/2-3/04.png)
+
+```SQL
+SELECT ID FROM (
+  SELECT CategoryID AS ID FROM Categories
+  WHERE CategoryID > 4
+  UNION ALL
+  SELECT EmployeeID AS ID FROM Employees
+  WHERE EmployeeID % 2 = 0
+) AS Temp 
+GROUP BY ID HAVING COUNT(*) = 1;
+```
