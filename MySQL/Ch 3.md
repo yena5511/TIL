@@ -285,3 +285,85 @@ insert into people
 	- 상대적
 	- 시간대의 영향을 받음
 	- 행 추가시 값을 안 넣으면 자동으로 현 시간이 입력
+
+## Lesson 4. 데이터 변경, 삭제하기
+
+#### 1. DELETE - 주어진 조건의 행 삭제하기
+
+- ⭐ Preferences > SQL Editor > Safe Updates 항목 체크오프하고 다시 접속
+
+```SQL
+delete from businesses
+where status = 'CLS';
+```
+- - where 안 쓰면 모든 행 삭제
+
+*DELETE 문으로 행 전체 삭제*
+```SQL
+delete from businesses;
+```
+```SQL
+insert into businesses (fk_section_id, businesses_name, status, can_takeout)
+values  (3, '화룡각', 'OPN', 1),
+        (2, '철구분식', 'OPN', 1),
+        (5, '얄코렐라', 'RMD', 1);
+```
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1145285390450835466/image.png)
+
+
+*💡 TRUNCATE 문으로 테이블 초기화*
+```SQL
+truncate businesses;
+```
+```SQL
+INSERT INTO businesses (fk_section_id, business_name, status, can_takeout)
+VALUES  (3, '화룡각', 'OPN', 1),
+        (2, '철구분식', 'OPN', 1),
+        (5, '얄코렐라', 'RMD', 1);
+```
+- 테이블 자체를 초기화
+![](https://cdn.discordapp.com/attachments/1102264938354978819/1145285123881840710/image.png)
+
+#### 2. UPDATE - 주어진 조건의 행 수정하기
+
+```SQL
+update menus
+set menu_name = '삼선짜장'
+where menu_id = 12;
+```
+
+*여러 컬럼 수정하기*
+```SQL
+update menus
+set
+	menu_name = '열정떡볶이',
+    kilocalories = 492.78,
+    price = 5000
+where
+	fk_business_id = 4
+    AND menu_name = '국물떡볶이';
+```
+
+*컬럼 데이터 활용하여 수정하기*
+```SQL
+update menus
+set price = price + 1000
+where fk_business_id = 8;
+```
+```SQL
+update menus
+set menu_name = concat('전통', menu_name)
+where fk_business_id IN (
+	select business_id
+    from sections S
+    left join businesses B
+		on S.section_id = B.fk_section_id
+	where section_name = '한식'
+);
+```
+
+⚠️ 조건문 없이는 모든 행 변경
+```SQL
+UPDATE menus
+SET menu_name = '획일화';
+```
