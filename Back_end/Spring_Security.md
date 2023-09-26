@@ -164,3 +164,62 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ```
+
+[UserDetails]
+
+- 인증에 성공하여 생성된 UserDetails 객체는 Authentication객체를 구현한 UsernamePassworldAuthenticationToken을 생성하시 위해 사용된다
+- UserDetails 인터페이스를 살펴보면 아래와 같이 정보를 반환하는 메소드를 가지고 있다
+- UserDetails 인터페이스의 경우 직잡 개발한 UserVO모델에 UserDatails를 implements하여 이를 처리하거나 UserDetailsVO에 UserDetails를 implements하여 처리할 수 있다
+
+```java
+public interface UserDetails extends Serializable {
+
+    Collection<? extends GrantedAuthority> getAuthorities();
+
+    String getPassword();
+
+    String getUsername();
+
+    boolean isAccountNonExpired();
+
+    boolean isAccountNonLocked();
+
+    boolean isCredentialsNonExpired();
+
+    boolean isEnabled();
+    
+}
+```
+
+[UserDetailService]
+
+- UserDetailsService 인터페이스는 UserDetalis 객체를 반환하는 단 하나의 메소드를 가지고 있는데, 일반적으로 이를 구현한 클래스의 내부에 UserRepository를 주입받아 DB와 연결하여 처리한다
+- UserDetails 인터페이스는 아래와 같다
+```java
+public interface UserDetailsService {
+
+    UserDetails loadUserByUsername(String var1) throws UsernameNotFoundException;
+
+}
+```
+
+[Password Encoding]
+- AuthenticationMangerBuilder.userDetailsService().passwordEncoder()를 통해 패스워드 암호화에 사용될 PasswordEncoder 구현체를 지정할 수 있다
+```java
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+	// TODO Auto-generated method stub
+	auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+}
+
+@Bean
+public PasswordEncoder passwordEncoder(){
+	return new BCryptPasswordEncoder();
+}
+```
+
+[GrantedAuthority]
+
+- GrantAuthority는 현재 사용자(principal)가 가지고 있는 권한을 의미한다
+- ROLE_ADMIN나 ROLE_USER와 같이 ROLE_*의 형태로 사용하며, 보통 "roles"이라고 한다
+- GrantedAuthority 객체는 UserDetailsService에 의해 불러올 수 있고 특정 자원에 대한 권한이 있는지를 검사하여 접근 허용 여부를 결정한다
