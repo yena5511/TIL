@@ -4,17 +4,42 @@
 - Spring Security는 '인증'과 '권한'애 대한 부분을 Filter 흐름에 따라 처리하고 있다
 - 보안과 과현해서 체계적으로 많은 옵션을 제공해주기 때문에 개발자 입장에서는 일일이 보안 관련 로직을 작성하기 않아도 된다는 장점이 있다
 
+#### 보안 용어 정리
+
+- 접근 주체(Principal): 보호된 대상에 접근하는 유저
+- 인증(Authenticate): 현재 유저가 누구안지 확인(ex.로그인)
+    - 애플리케이션의 작업을 수행할 수 있는 주체임을 증명
+- 인가(Authorize): 현재 유저가 어떤 서비스, 페이지에 접근할 수 있는 권한이 있는지 검사
+- 권한: 인증된 주체가 애플리케이션의 동작을 수핼할 수 있도록 허락되었는지를 결정
+    - 권한이 승인이 필요한 부분으로 접근하려면 인증과정을 통해 주체가 증면되어야만 한다
+    - 권한 부여 영역
+        - 웹 요청 권한
+        - 메소드 호출 및 도메인 인스턴스에 대한 접근 권한
+
 #### 특징
 
 - 인증 및 권한 부여에 대한 포괄적이고 확장 가능한 지원
 - 세션 고정, 클릭재킹,크로스 사이트 요청 위조 등과 같은 공격으로부터 보호
 - 서블릿 API 통합
 - Spring Wep MVC와의 선택적 통합
+- Filter를 기반으로 동작
+    - SpringMVC와 분리되어 관리하고 동작할 수 있다
+- bean으로 설정할 수 있다
+    - Spring Security 3.2부터 XML 설정을 이용하지 않아도 된다
+
+#### Spring security는 세션/쿠키방식으로 인증
+
+1. 유저가 로그인을 시도(http request)
+2. AuthenticationFilter에서부터 위와같이 user DB까지 타고 들어감
+3. DB에 있는 유저라면 UserDetails로 꺼내는 유저의 session 생성
+4. Spring security의 인메모리 세션 저장소링 SecurityContextHolder에 저장
+5. 유저에게 session ID와 함께 응답을 내려줌
+6. 이후 요청에서는 요청쿠키에서 JSESSIONID를 까봐서 검증 후 유효하면 Authentication를 쥐어준다
 
 
 #### 인증과 인가
 
-- 인중(Authentication): 해당 사용자가 본인이 맞는지를 확인하는 절차
+- 인증(Authentication): 해당 사용자가 본인이 맞는지를 확인하는 절차
 - 인가(Authorization): 인증된 사용자가 요청한 자원에 접근 가능한지를 결정하는 절차
 
 
@@ -39,8 +64,11 @@
 - Authentication(인증)을 보관하는 역할을 하며, SecurityContext를 통해 Authentcation(인증)객체를 꺼내올 수 있다
 
 [Authentication]
+
+- 모든 접근 주체(=유저) 는 Authentication 를 생성한다
 - 현재 접근하는 주체의 정보와 권한을 담는 인터페이스이다
 - Authentication 객체는 Security Context에 저장되며, SecurityContextHolder를 통해 SecutityContext애 접근하고, SrcurityContext를 통해 Authentication에 접근할 수 있다
+
 
 [UsernamePasswordAuthenticationToken]
 - UsernamePasswordAuthenticationToken은 Authentication을 implements한 AbstractAuthentication의 하위 클래스로, User의 ID가 Principal 역할을 하고, Password가 Credental의 역할을 한다
@@ -93,6 +121,7 @@ public interface AuthenticationProvider {
 
 [Authentication Manager]
 
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F99CD2C3A5B6B2A1903)
 - 인증에 대한 부분은 Spring Security의 AuthenticatonManager를 통해서 처리하게 되는데, 실질적으로는 AuthenticationManager에 등록된 AuthenticationProvider에 의해 처리된다
 - 인증이 성공하면 2번째 생성자를 이용해 인증이 성공한 (isAuthenticated = true) 객체를 생성하여 Security Context에 저장한다
 - 그리고 인증 상태를 유지하기 위해 세션에 보관하며, 인증이 실패한 경우에는 AuthrnticationException을 발생시킨다
