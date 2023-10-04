@@ -254,3 +254,67 @@ public PasswordEncoder passwordEncoder(){
 - ROLE_ADMIN나 ROLE_USER와 같이 ROLE_*의 형태로 사용하며, 보통 "roles"이라고 한다
 - GrantedAuthority 객체는 UserDetailsService에 의해 불러올 수 있고 특정 자원에 대한 권한이 있는지를 검사하여 접근 허용 여부를 결정한다
 
+
+## Securing a Web Application
+
+#### 보안되지 않는 웹 애플리케이션 생성
+
+웹 애플리테이션에 보안을 적용하려면 먼저 보안을 설정할 웹 애플리케이션이 필요하다
+
+웹 애플리케이션에는 홈 페이지와 "Hello, World"페이지하는 두 가지 간단한 보기가 포함되어 있다
+ 홈 페이지는 다음 Thymeleaf 템플릿으로 정의
+
+`home`
+ ```html
+ <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <title>Spring Security Example</title>
+    </head>
+    <body>
+        <h1>Welcome!</h1>
+
+        <p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
+    </body>
+</html>
+ ```
+
+
+`hello`
+```html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <title>Hello World!</title>
+    </head>
+    <body>
+        <h1>Hello world!</h1>
+    </body>
+</html>
+```
+
+웹 애플리케이션은 spring MVC를 기반으로 한다
+결과적으로 Spring MVC를 구성하고 이러한 템플릿을 노출하도록 뷰 컨트롤러를 설정해야 한다
+
+`MvcConfig`
+```java
+package com.example.securingweb;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class MvcConfig implements WebMvcConfigurer {
+
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/home").setViewName("home");
+		registry.addViewController("/").setViewName("home");
+		registry.addViewController("/hello").setViewName("hello");
+		registry.addViewController("/login").setViewName("login");
+	}
+
+}
+```
+
+```addViewControllers()```메서드(에서 )
