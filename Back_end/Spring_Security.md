@@ -317,4 +317,116 @@ public class MvcConfig implements WebMvcConfigurer {
 }
 ```
 
-```addViewControllers()```메서드(에서 )
+```addViewControllers()```메서드(에서 동일한 이름의 메서드를 재정의함 WebMvcConfigurer)는 4개의 뷰 컨트롤러를 추가한다
+```home```뷰 컨트롤러 중 두개는 이름이 (에 정의됨)인 뷰를 참조하고, 다른 하나는 ( 에 정의되어 있음 ) home.html이라는 이름의 뷰를 참조한다
+네 번째 뷰 컨트롤러는 다른 뷰를 참조한다
+
+## 스프링 보안 설정
+
+승인되지 않은 사용자가 인사말 페이지를 보는 것을 방지한다고 가정해 보겠다
+```/hello```
+지금부터 방문자가 홈페이지의 링크를 클릭하면 아무헌 문제 없이 인사말을 볼 수 있습니다
+방문자가 해장 페이지를 보기 전에 로그인하도록 강제하는 장벽을 추가해야 한다
+
+애플리케이션에서 Spring Security를 구성하면 된다
+SpringSecurity가 클래스 경로에 있는 경유 spring Boot는 기본 인증을 사용하여 모든 HTTP끝점을 자동으로 보호한다
+그러나 보안설정을 추가로 사용자 정의할 수 있다
+가장먼저 해야할 일은 클래스 경로에 Spring security를 추가하는 것 이다
+
+Gredle을 사용하면 다음 목록과 같이 ```dependencies```클로저에 세 줄(애플리케이션용 하나, Thymeleaf 및 Spring Security통합용 하나, 테스트용 하나)를 추가해야 한다
+
+```java
+implementation 'org.springframework.boot:spring-boot-starter-security'
+//  Temporary explicit version to fix Thymeleaf bug
+implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+implementation 'org.springframework.security:spring-security-test'
+```
+
+인증된 사용자만 비밀 인사말을 볼 수 있도록 보장한다
+
+`WebSecurityConfig`
+```java
+package com.example.securingweb;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+			.authorizeHttpRequests((requests) -> requests
+				.requestMatchers("/", "/home").permitAll()
+				.anyRequest().authenticated()
+			)
+			.formLogin((form) -> form
+				.loginPage("/login")
+				.permitAll()
+			)
+			.logout((logout) -> logout.permitAll());
+
+		return http.build();
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		UserDetails user =
+			 User.withDefaultPasswordEncoder()
+				.username("user")
+				.password("password")
+				.roles("USER")
+				.build();
+
+		return new InMemoryUserDetailsManager(user);
+	}
+}
+```
+
+이 클래스에는 Spring Security의 웹 보안 지원을 활성화하고 spring MVC통합을 제공하기 위해 ```WebSecurityConfig```주석이 추가 된다
+
+``` @EnableWebSecurity```또 한 웹 구성에 대한 며착지 세부 사항을 위해 두 개의 Bean을 노출한다
+
+Bean`SecurityFilterChain`은 보호해야 할 URL경로와 보호하지 말아야할 URL 경로를 정의 한다
+특히 `/`및 `/home`경로는 인증이 필요하지 않도록 구성된다
+다른 모든 결로는 인증되어야 한다
+
+사용자가 성공적으로 로그인하면 인증이 필요한 이전에 요청한 페이지로 리디렉션된다
+`/login`로 지정되는 사용자 정의 페이지가 있으면 `loginPage()`모든 사람이 볼 수 있어야 한다
+
+Bean `UserDetailsService`은 단일 사용자로 메모리 내 사용자 저장소를 설정한다
+해당 사용자에게는 사용자 이름 user, 암호 password및 역할이 부여된다
+
+이제 로그인 페이지를 생성해야 한다
+뷰 컨트롤러가 이미 있으므로 `login`다은 목록과 같이 로그인 뷰 자체만 생성하면 된다
+
+```java
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+    <head>
+        <title>Spring Security Example </title>
+    </head>
+    <body>
+        <div th:if="${param.error}">
+            Invalid username and password.
+        </div>
+        <div th:if="${param.logout}">
+            You have been logged out.
+        </div>
+        <form th:action="@{/login}" method="post">
+            <div><label> User Name : <input type="text" name="username"/> </label></div>
+            <div><label> Password: <input type="password" name="password"/> </label></div>
+            <div><input type="submit" value="Sign In"/></div>
+        </form>
+    </body>
+</html>
+```
