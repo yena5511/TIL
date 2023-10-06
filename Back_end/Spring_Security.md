@@ -430,3 +430,52 @@ Bean `UserDetailsService`은 단일 사용자로 메모리 내 사용자 저장�
     </body>
 </html>
 ```
+
+이 Thymeleaf 템플렛은 사용자 이름과 비밀번호를 캡처하여 게시하는 양식을 제공한다
+`/login`구성된 대로 springsecurity는 해당요청을 가로채고 사용자를 인증하는 필터를 제공한다
+사용자가 인증에 실패하면 페이지가 리디렉션되고 `/login?error`페이지로 해당 오류 메시지가 표시 된다
+로그아웃에 성공하면 애플리케이션으로 전송되고 `/login?logout`페이지에 적절한 성공메시지가 표시된다
+
+마지막으로 방문자에게 현재 사용자 이름을 표시하고 로그아웃 할 수 있는 방범을 제공해야 한다
+이렇게 하려면 다음 목록과 같이 `hello.html`현재 사용자에게 인사하고 양식을 포함하도록 업데이트를 해야 한다
+
+```java
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+    <head>
+        <title>Hello World!</title>
+    </head>
+    <body>
+        <h1 th:inline="text">Hello <span th:remove="tag" sec:authentication="name">thymeleaf</span>!</h1>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+    </body>
+</html>
+```
+
+Thymeleaf와 spring Security의 통합을 사용하여 사용자 이름을 표시한다
+"로그아웃"양식은 POST에 제출한다
+성공적으로 로그아웃되면 사용자를 리디렉션한다
+
+#### 애플리케이션 실행
+
+Spring초기화는 당신을 위해 애플리케이션 클래스를 생성한다
+이 경우 클래스를 수정할 필요가 없다
+
+```java
+package com.example.securingweb;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SecuringWebApplication {
+
+	public static void main(String[] args) throws Throwable {
+		SpringApplication.run(SecuringWebApplication.class, args);
+	}
+
+}
+```
