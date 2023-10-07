@@ -479,3 +479,38 @@ public class SecuringWebApplication {
 
 }
 ```
+
+## 스프링 보안 아키텍퍼
+
+#### 인증 및 액세스 제어
+
+애플리케이션 보안은 인증(당신은 누구입니까?)과 승인(무엇을 할 구 있습니까?)이라는 두 가지 독립적인 문제로 요약된다
+가끔 사람들이 인증 대신에 접근제어라고 말하는데 이는 혼란 스러울 수 있지만, 
+인증은 다른 곳에서 과부하가 걸리기 때문에 그렇게 생삿하는 것이 도움이 될 수 있다
+Spring Security에는 인증과 인증을 분리하도록 설계된 아키텍쳐가 있으며 두가지 모두에 대한 전략과 확장 지점이 있다
+
+#### 인증
+
+인증을 위한 기본 전략 인터페이스는 ```AuthenticationManager```다음과 같이 한 가지 방법만 있다
+
+```java
+public interface AuthenticationManager {
+
+  Authentication authenticate(Authentication authentication)
+    throws AuthenticationException;
+}
+```
+
+`AuthenticationManager`해당 메서드에서는 다음 세 가지 작업 중 하나를 수행할 수 있다 `authenticate()`
+- 입력이 유효한 주체를 나타내는지 확인할 수 있으면 `Authentication`(일반적으러) `authenticated=true`를 반환한다
+- `AuthenticationException`입력이 유효하지 않은 주체를 나타낸다고 판단되면 발생시킨가
+- `null`결정할 수 없으면 반품한다
+
+`AuthenticationException`런타임 예외이다
+일반적으로 애플리케이션의 스타일이나 목적에 따라 일반적인 방식으로 애플리케이션에서 처리 된다
+즉, 사용자 코드는 일반적으로 이를 포착하고 처리할 것으로 예상되지 않는다
+예를 들어 웹UI는 인증 실패를 알리는 페이지를 렌더링할 수 있으면 백엔드 HTTP서비스는 `WWW-Authenticate`컨텍스트에 따라 헤더 유무에 관계없이 401응답을 보낼 수 있다
+
+가장 일반적으로 사용되는 구현은 인스턴스 체인에 위힘하는 것`AuthenticationManager`이다
+
+
