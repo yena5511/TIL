@@ -512,5 +512,111 @@ public interface AuthenticationManager {
 예를 들어 웹UI는 인증 실패를 알리는 페이지를 렌더링할 수 있으면 백엔드 HTTP서비스는 `WWW-Authenticate`컨텍스트에 따라 헤더 유무에 관계없이 401응답을 보낼 수 있다
 
 가장 일반적으로 사용되는 구현은 인스턴스 체인에 위힘하는 것`AuthenticationManager`이다
+An은 an과 약간 비슷하지만 호출자가 주어진 유형을 지원하는지 여부를 쿼리할 수 있는 추가 메서드가 있다
+`ProviderManager`
+`AuthenticationProvider`
+`AuthenticationManager`
+`Authentication`
+
+```java
+public interface AuthenticationProvider {
+
+	Authentication authenticate(Authentication authentication)
+			throws AuthenticationException;
+
+	boolean supports(Class<?> authentication);
+}
+```
+
+`Class<?>`메서드의 인수는 실제로 `supports()`이다
+`Class<? extends Authentication>`(메서드에 전달된 항목을 지원하는지 여부만 묻는다 `authenticatioj()`)
+A는 `ProviderManager`체인에 위임하여 동일한 애플리케이션에서 여러가지 인증 메커니즘을 지원할 수 있다
+`AuthenticationProviders`, `ProviderManager`가 특정 인스턴스 유형을 인식하지 못하는 경우 `Authentication`건너 뛴다
+
+A`roviderManager`에는 모든 공급자가 반환하는 경우 참조할 수 있는 선택적 부모가 있다 `null`
+상위 항목을 사용할 수 없는 경우 `null`, `Authentication`결과입니다
+
+경우에 따라 애플리케이션에는 보호된 리소스(예: 경로 패턴과 일치하는 모든 웹리소스 `/api/**`)의 논리적그룹이 있고 각 그룹에는 자체 전용 `AuthenticationManager`
+종종 이들 각각은 `ProviderManager`이고 상위를 공유한다
+그러면 상위는 일종의 "글로벌"리소스가 되어 모든 공급자에 대한 대체역할을 한다
 
 
+#### `AuthenticationManager`사용한 계층 구조`ProviderManager`
+
+![](https://github.com/spring-guides/top-spring-security-architecture/raw/main/images/authentication.png)
+
+Spring Security는 애플리케이션에 공통 인증 관리자 기능을 빠르게 설정할 수 있도록 몇가지 구성 도우미를 제공한다
+가장 일반적으로 사용되는 도우미는 `AuthenticationManagerBuilder`메모리, JDBC또는 LDAP 사용자 세부 정보를 설정하거나 사용자 정의 `UserDetailsService`
+다음 예에서는 전역 (상위)을 구성하는 애플리케이션으 보여준다 
+
+```java
+@Configuration
+public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+
+   ... // web stuff here
+
+  @Autowired
+  public void initialize(AuthenticationManagerBuilder builder, DataSource dataSource) {
+    builder.jdbcAuthentication().dataSource(dataSource).withUser("dave")
+      .password("secret").roles("USER");
+  }
+
+}
+```
+
+이 예는 웹 애플리케이션과 관련이 있지만 사용법이 `AuthenticationManagerBuilder`더 광법위하게 적용된다
+a의 매서드에 포함되어`AuthenticationManagerBuilder`있으므로 전역(부모)을 빌드하게 된다
+이와 대조적인 다음 예시 `@Autowired`
+`@Bean`
+`AuthenticationManager`
+
+```java
+@Configuration
+public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+
+  @Autowired
+  DataSource dataSource;
+
+   ... // web stuff here
+
+  @Override
+  public void configure(AuthenticationManagerBuilder builder) {
+    builder.jdbcAuthentication().dataSource(dataSource).withUser("dave")
+      .password("secret").roles("USER");
+  }
+
+}
+```
+`@override`구성에서 메서드를 사용했다면 전역 메서드의 하위인 `AuthenticationManagerBuilder` "로컬"을 빌드하는 데에만 사용된다
+`AuthenticationManager`Spring Boot 애플리케이션에서는 `@Autowried`전역 빈을 다른 빈으로 만들 수 있지만 명시적으로 직접 노출하지 않는 한 로컬 빈으로 그렇게 할 수 는 없다
+
+`AuthenticationManager`SpringBoot는 사용자가 유형의 빈을 제공하여 선점하지 않는 한 기본 전역(사용자가 한 명만 있음)을 제공한다
+기본값은 사용자 정의 전역이 적극적으로 필요하지 않는 한 크게 걱정할 필요가 없으 정도로 그 자체로 충분히 안전하다
+`AuthenticationManager`를 구축하는 구성을 수행하는 경우 
+보호하는 리소스에 대한 로컬로 수행할 수 있으며 전역 기본값에 대해 걱정할 필요가 없다
+
+승인 또는 액세스 제어
+
+인증을 성공하면 인증으로 넘어갈 수 있는데 여기서 핵심 전략은 `AccessDecisionManager`이다
+프레임워크에서 제공하는 새 가지 구혀닝 있으며 세 가지 모두 인스턴스 체인에 위입한다
+`AccessDecisionVoter`
+`ProviderManager` `AuthenticationProviders`
+
+An(주체를 나타냄)은 다음으로 장식된 secure를 `AccessDecisionVoter` 고려한다
+
+```java
+boolean supports(ConfigAttribute attribute);
+
+boolean supports(Class<?> clazz);
+
+int vote(Authentication authentication, S object,
+        Collection<ConfigAttribute> attributes);
+```
+`Authentication`
+`Object`
+`ConfigAttributes`
+은 밎 `Object`의 서명에서 완전히 일반적이다
+이는 사용자가 액세스하려는 모든 것을 나타낸다(웹 리소스 또는 Java클래스의 메소드가 가장 일반적인 두 가지 경우이다)
+이는 또한 보안에 액세스하는 데 필요한 권한 수준을 결정하는 일부 메타데이터로 보안 장식을 나타내는 매우 일반적인 것이다
+인터페이스 에는 하나의 메서드(아주 일반적이며 a를 반환함 )만 있으므로 이러한 문자열은 리소스 소유자의 의도를 어떤 식으로든 인코딩하여 리소스에 액세스할 수 있는 사람에 대한 규칙을 표현한다
+일반적인 이름은 사용자 역할의 이름(예: 또는 )이며 특수 형식
