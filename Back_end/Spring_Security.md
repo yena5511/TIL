@@ -620,3 +620,22 @@ int vote(Authentication authentication, S object,
 이는 또한 보안에 액세스하는 데 필요한 권한 수준을 결정하는 일부 메타데이터로 보안 장식을 나타내는 매우 일반적인 것이다
 인터페이스 에는 하나의 메서드(아주 일반적이며 a를 반환함 )만 있으므로 이러한 문자열은 리소스 소유자의 의도를 어떤 식으로든 인코딩하여 리소스에 액세스할 수 있는 사람에 대한 규칙을 표현한다
 일반적인 이름은 사용자 역할의 이름(예: 또는 )이며 특수 형식
+
+대부분의 사람들은 기본값을 사용한다 `AccessDecisionManager` 
+즉, `AffirmativeBased` 투표자가 긍정적으로 응답하면 액세스가 허용된다
+모든 사용자 정의는 새로운 것을 추가하거나 기존의 작동 방식을 수정하여 유권자에서 발생하는 경향이 있다
+
+SpEL(Spring Expression Language) 표현식을 사용하는 것이 매우 일반적이다
+`ConfigAttributes`(예: `isFullyAuthenticated() && hasRole('user')`
+이는 표현식을 처리하고 이에 대한 컨텍스트를 생성할 수 있는 `AccessDecisionVoter`에서 지원된다
+처리할 수 있는 표현식의 범위를 확정하려면 `SecurityExpressionRoot`및 때로는 `SecurityExpressionHandler`의 사용자 정의 구현이 필요하다
+
+#### 웹 보안
+
+윕 계층(UI및 HTTP 백엔드용)의 Spring Security는 Servlet을 기반으로 하므로 일반적인 `Filters`역할을 먼저 살펴보는 것이 도운이 된다
+`Filters`다음 그림은 단일 HTTP요청에 대한 핸들러의 일반적인 계층을 보여준다
+
+![](https://github.com/spring-guides/top-spring-security-architecture/raw/main/images/filters.png)
+
+클라이언트는 애플리케이션에 요청을 보내고 컨테이너는 요청 URI의 경로를 기반으로 어떤 필터와 서블릿을 적용할지 결정한다.
+기껏해야 하나의 서블릿이 단일 요청을 처리할 수 있지만 필터는 체인을 형성하므로 순서가 지정된다
