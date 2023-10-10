@@ -638,4 +638,33 @@ SpEL(Spring Expression Language) 표현식을 사용하는 것이 매우 일반�
 ![](https://github.com/spring-guides/top-spring-security-architecture/raw/main/images/filters.png)
 
 클라이언트는 애플리케이션에 요청을 보내고 컨테이너는 요청 URI의 경로를 기반으로 어떤 필터와 서블릿을 적용할지 결정한다.
-기껏해야 하나의 서블릿이 단일 요청을 처리할 수 있지만 필터는 체인을 형성하므로 순서가 지정된다
+기껏해야 하나의 서블릿이 단일 요청을 처리할 수 있지만 필터는 체인을 형성하므로 순서가 지정된다.
+실제로 필터는 요청 자체를 처리하려는 경우 체인의 나머지 부분을 거부할 수 있다.
+필터는 다운스트림 필터 및 서블릿에 사용되는 요청이나 응답을 수정할 수도 있다
+필터 체인의 순서는 매우 중요하다 Spring Boot는 두가지 메커니즘을 통해 필터 체인을 관리한다
+`@Bean`유형은 `@Order`
+`Ordered`
+`FilterRegistrationBean` 또는 구현을 `Filter`가질 수 있고 그 자체에는 API의 일부로 주문이 있다.
+일부 기성필터는 서로에 대한 상대적인 순서를 알리는 데 도움이 되는 자체 상수를 정의한다
+예를 들어 `SessionRepositoryFilterSpring `세션의 a `DEFAULT_ORDER`는 `Integer.MIN_VALUE + 50`체인의 초기에 있기를 좋아하지만 앞에 오는 다른 필터를 배제하지 않는다.
+
+`Filter`Spring Security는 체인에서 단일로 설치되며 구체적인 유형은 `FilterChainProxy`곧 설명할 이유이다.
+Spring Boot 애플리케이션에서 보안필터는 `@Bean`,` ApplicationContext`에 있으며 모든 요청에 적용되도록 기본적으로 설치된다.
+이는 `SecurityProperties.DEFAULT_FILTER_ORDER`에 의해 정의된 위치에 설치되며, 이는 다시 고정된다.
+`FilterRegistrationBean.REQUEST_WRAPPER_FILTER_MAX_ORDER`(Spring Boot 애플리케이션이 요청을 래핑하여 동작을 수정하는 경우 필터가 가질 것으로 예상하는 최대 순서)
+하지만 그보다 더 많은 것이 있다
+컨테이너의 관점에서 보면 Spring Security는 단일 필터이지만 그 내부에는 각각 특별한 역할을 수행하는 추가 필터가 있다
+다음 이미지는 이 관계를 보여준다
+
+![](https://github.com/spring-guides/top-spring-security-architecture/raw/main/images/security-filters.png)
+
+#### Spring Security는 단일 물리적 `Filter`이지만 내부 필터 체인에 처리를 위임한다
+
+`DelegatingFilterProxy`실제로 보안 필토에는 간접계층이 하나 더 있다.
+일반적으로 컨테이너에 SPring일 필요는 없지만 컨테이너에 설치 된다.
+일반적으로 고정 이름을 사용하여 `FilterChainProxy`항상 a인 a 에 위임한다.
+내부적으로 필터 체인(또는 체인)으로 배열된 모든 보안 로직을 포함하는 것 이다
+모든 필터에는 동일한 API가 있으며 (모두 서블릿 사양의 인터페이스를 구현함)나머지 체인을 거부할 수 있는 기회가 있다
+
+동일한 최상위 수준에서 Spring Security에 의해 관리되는 여러 필터 체인이 있을 수 있으며 `FilterChainProxy`모두 컨테이너에 알려지지 않느다
+Spring Security 필터는 필터체인 목록을 포함하고 일치하는 첫 번뺴 체인에 요청을 전달한다.
