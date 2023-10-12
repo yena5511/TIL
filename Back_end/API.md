@@ -15,6 +15,11 @@
     - PUT: 정보를 통째로 갈아끼울 때
     - PATCH: 정보 중 일부를 특정 방식으로 변경 할 때 사용
 
+## API
+Application Programming Interface(애플리케이션의 프로그래밍 통신 수단)
+-> 컴퓨터 사용할 때. 일상 생활의 거의 모든 것
+
+
 
 ## CRUD
 

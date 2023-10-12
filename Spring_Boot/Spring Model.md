@@ -2,7 +2,7 @@
 
 Model은 스프링이 지원하는 기능으로써, key와 value로 이루어져있는 HashMap이다<br>
 Controller의 메서드는 Model이라는 타입의 객체를 파라미터로 받을 수 있다<br>
-순수하게 JSP Servlet으로 웹 어플리케이션을 만들 때 보통 request나 session 내장객체에 정보를 담아 jsp에 넘겨주곤 했는데 Spring에서는 Model 이라는 것을 쓴다<br>
+순수하게 JSP Servlet으로 웹 어플리케이션을 만들 때 보통 request이나 session 내장객체에 정보를 담아 jsp에 넘겨주곤 했는데 Spring에서는 Model 이라는 것을 쓴다<br>
 즉 `requst.setAttribute()`와 비슷한 역할을 하는 것
 
 
@@ -25,7 +25,7 @@ public String home(Model model) {
 
 스프링 MVC의 Controller는 기본적으로 Java Beans 규칙에 맞는 객체는 자동으로 화면에 전달해준다
 Java Beans의 규칙에 맞는다는 것은 단순히 생성자가 없거나 빈 생성자를 가지며, getter/setter를 가진 클래스의 객체들을 의미한다
-전달될 째는 클래스명의 앞글자를 소문자로 처리하여 전달한다
+전달될 때는 클래스명의 앞글자를 소문자로 처리하여 전달한다
 
 그러나 기본 자료형(int, double등등)은 파라미터로 선언되었더라도 화면에 자동으로 전달되지 않는다
 
@@ -68,8 +68,8 @@ public String ex04(SampleDTO dto, @ModelAttribute("mypage") int page) {
 `RedirectAttribues`: 타입의 객체는 일회성으로 데이터를 전달할 수 있다`response.sendRedirect()`와 동일한 용도로 사용이 가능한 객체이다
 
 `addFlashAttribute()` 메서드는 (이름, 값)을 파라미터로 이용하여 화면에 딱 한번만 사용하고 사라지는 데이터를 전달한다
-새로고츰하면 날라간다
-`addAttribute()`리아티렉트할 주소 뒤에 쿼리스트링으로 데이터를 전달해준다
+새로고침하면 날라간다
+`addAttribute()`리디렉트할 주소 뒤에 쿼리스트링으로 데이터를 전달해준다
 
 #### Controller 메서드의 리턴 타입
 

@@ -1,13 +1,13 @@
 ## Spring Security
 
 - Spring Security는 Spring 기반의 애플리케이션의 보안(인증과 권한, 인가 등)을 담당하는 스프링 하위 프레임워크이다
-- Spring Security는 '인증'과 '권한'애 대한 부분을 Filter 흐름에 따라 처리하고 있다
-- 보안과 과현해서 체계적으로 많은 옵션을 제공해주기 때문에 개발자 입장에서는 일일이 보안 관련 로직을 작성하기 않아도 된다는 장점이 있다
+- Spring Security는 '인증'과 '권한'에 대한 부분을 Filter 흐름에 따라 처리하고 있다
+- 보안과 관련해서 체계적으로 많은 옵션을 제공해주기 때문에 개발자 입장에서는 일일이 보안 관련 로직을 작성하기 않아도 된다는 장점이 있다
 
 #### 보안 용어 정리
 
 - 접근 주체(Principal): 보호된 대상에 접근하는 유저
-- 인증(Authenticate): 현재 유저가 누구안지 확인(ex.로그인)
+- 인증(Authenticate): 현재 유저가 누구인지 확인(ex.로그인)
     - 애플리케이션의 작업을 수행할 수 있는 주체임을 증명
 - 인가(Authorize): 현재 유저가 어떤 서비스, 페이지에 접근할 수 있는 권한이 있는지 검사
 - 권한: 인증된 주체가 애플리케이션의 동작을 수핼할 수 있도록 허락되었는지를 결정
@@ -72,7 +72,7 @@
 
 [UsernamePasswordAuthenticationToken]
 - UsernamePasswordAuthenticationToken은 Authentication을 implements한 AbstractAuthentication의 하위 클래스로, User의 ID가 Principal 역할을 하고, Password가 Credental의 역할을 한다
-- UsernamePasswordAuthenticationToken의 첫 생성자는 인증 전의 객체를 생성하고, 두 번째 생성자는 인증이 완려된 객체를 생성한다
+- UsernamePasswordAuthenticationToken의 첫 생성자는 인증 전의 객체를 생성하고, 두 번째 생성자는 인증이 완료된 객체를 생성한다
 
 ```java
 public class UsernamePasswordAuthenticationToken extends AbstractAuthenticationToken {
@@ -106,7 +106,7 @@ public abstract class AbstractAuthenticationToken implements Authentication, Cre
 
 [AuthenticationProvider]
 
-- AuthenticationProvider에서는 실제 인증엘 대한 부분을 처리하는데, 인증 전의 Authentication객체를 받아서 인증이 완료된 객체를 반환하는 역할을 한다
+- AuthenticationProvider에서는 실제 인증에 대한 부분을 처리하는데, 인증 전의 Authentication객체를 받아서 인증이 완료된 객체를 반환하는 역할을 한다
 - 아래와 같이 AuthenticationProvider 인테페이스를 구현해서 Custom한 AuthenticationProvider을 작성해서 AuthenticationManager에 등록하면 된다
 ```java
 public interface AuthenticationProvider {
