@@ -44,6 +44,28 @@ public class UserController {
 }
  ```
 
+#### @RestController
+
+Spring에서 Controller 중 view로 응답하지 않는, Controller를 의미한다.
+method의 반환 결과를 JSON향태로 반환하다.
+이 Annotation이 적혀있는 COntroller의 method는 HTTPResponse로 바로 응답이 가능하다.
+@ResposeBoby 역할을 자동적으로 해주는 Annotation이다.
+@Controller + @ResponseBody를 사용하면 @ResponseBody를 모든 메소드에서 적용한다.
+
+#### @Controller 와 @RestController 의 차이
+
+- @Controller
+    - API와 view를 동시에 사용하는 경우에 사용한다.
+    - 대신 API서비스로 사용하는 경우는 @ResponseBody를 사용하여 객체를 반환한다.
+    - view(화면) return이 주목적이다.
+
+- @RestController
+    - view가 필요없는 API만 지원하는 서비스에서 사용한다
+    - @RequestMapping 메서드가 기본적으로 @ResponseBody 의미를 가정한다.
+    - data(json, xml 등) return이 주목적이다.
+
+즉, @RestController = @Controller + @ResponseBody 이다.
+
 #### @RequestHeader
 
 Request의 hearder 값을 가져올 수 있으며, 해당 Annotation을 쓴 메소드의 파라미터에 사용한다.
@@ -58,6 +80,11 @@ public class UserController {
     }
 }
 ```
+
+#### @Repository
+
+DAO class에서 쓰인다.
+DataBase에 접근하는 method를 가지고 있는 Class에서 쓰인다.
 
 #### @RequestMapping
 
@@ -87,7 +114,7 @@ public class UserController {
 }
 ```
 
-#### RequestParam
+#### @RequestParam
 
 URL에 전달되는 파라미터를 메소드의 인자와 매칭시켜, 파리미터를 받아서 처리할 수 있는 Annotation으로 아래와 같이 사용된다.
 Json 형식의 Body를 MessageConverter를 통해 Java 객체로 변환시킨다
@@ -235,4 +262,11 @@ class DemoApplicationTests {
 
 #### @Test
 
-JUnit에서 테스트 할 대상을 표시한다.
+JUnit에서 테스트 할 대상을 표시한다. 
+
+#### @Resource
+
+@Autowired와 마찬가지로 Bean 객체를 주입해주는데 차이점은 Autowired는 타입으로, Resource는 이름으로 연결해준다.
+Annotation 사용으로 인해 특정 Framework에 종속적인 어플리케이션을 구성하지 않기 위해서는 @Resource를 사용할 것을 권장한다.
+@Resource를 사용하기 위해서는 class path 내에 jsr250-api.jar 파일을 추가해야 한다.
+필드, 입력 파라미터가 한 개인 bean property setter method에 적용 가능하다.
