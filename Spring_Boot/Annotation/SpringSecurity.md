@@ -40,3 +40,21 @@ Spring EL(표현식)을 사용할 수 있고, AND나 OR 같은 표현식을 사�
  ##### @PostAuthorize
  
  함수를 실행하고 클라이언트한테 응답을 하기 직전에 권한을 검사한다.
+
+#### @AuthenticationPrincipal
+
+세션 정보 UserDetails에 접근할 수 있는 어노테이션
+
+`@AuthenticationPrincipal`은 `UserDetails`타입을 가지고 있음 -> `UserDetails`타입을 구현한 `PrincipalDetails`클래스를 받아 User object를 얻는다.
+
+- userDetails(PrincipalDetails 타입).getUser()
+
+따라서 로그인 세션 정보가 필요한 컨트롤러에서 매번 @AuthenticationPrincipal로 세션 정보를 받아서 사용한다. 
+
+- @AuthenticationPrincipal`UserAdapter`타입
+- 로그인 세션 정보를 어노테이션을 간편하게 받을 수 있다
+- UserDetailsService에서 return한 객체를 파라미터로 직접 받아 사용할 수 있다
+- name 뿐만 아니라 다양한 정보를 받을 수 있다
+- 중복 코드를 효율적으로 줄일 수 있다
+
+
