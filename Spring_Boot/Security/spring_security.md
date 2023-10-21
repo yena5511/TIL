@@ -668,3 +668,19 @@ Spring Boot 애플리케이션에서 보안필터는 `@Bean`,` ApplicationContex
 
 동일한 최상위 수준에서 Spring Security에 의해 관리되는 여러 필터 체인이 있을 수 있으며 `FilterChainProxy`모두 컨테이너에 알려지지 않느다
 Spring Security 필터는 필터체인 목록을 포함하고 일치하는 첫 번뺴 체인에 요청을 전달한다.
+
+#### Spring Security 처리 과정
+
+1. 사용자가 로그인 정보와 함꼐 요청을 한다. (Http Request)
+2.  AuthenticationFilter가 요청을 가로채고, 가로챈 정보를 통해 UsernamePasswordAuthenticationToken의 인증용 객체를 생성한다.
+3. AuthenticationManager의 구현체인 ProviderManager에게 생성한 UsernamePasswordToken 객체를 전달한다.
+4.  AuthenticationManager는 등록된 AuthenticationProvider(들)을 조회하여 인증을 요구한다.
+5. 실제 DB에서 사용자 인증정보를 가져오는 UserDetailsService에 사용자 정보를 넘겨준다.
+6. 넘겨받은 사용자 정보를 통해 DB에서 찾은 사용자 정보인 UserDetails 객체를 만든다.
+AuthenticationProvider(들)은 UserDetails를 넘겨받고 사용자 정보를 비교한다.
+8. 인증이 완료되면 권한 등의 사용자 정보를 담은 Authentication 객체를 반환한다.
+9. 다시 최초의 AuthenticationFilter에 Authentication 객체가 반환된다.
+10. Authenticaton 객체를 SecurityContext에 저장한다.
+
+SecurityContextHolder는 세션 영역에 있는 SecurityContext에 Authentication 객체를 저장한다.
+사용자 정보를 저장한다는 것은 Spring Security가 전통적인 세션-쿠키 기반의 인증 방식을 사용한다는 것을 의미한다.
