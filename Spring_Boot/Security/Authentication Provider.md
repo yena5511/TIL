@@ -62,9 +62,33 @@ public class DomainAuthenticationProvider implements AuthenticationProvider {
 }
 
 ```
+supports 메소드의 경우 아래의 같이 공식 문서에 정의 되어있다.
 
+```AuthenticationProvider표시된 Authentication객체를 지원 하는지 여부를 반환 합니다.```
 
+return 된는 값이 true면 된다고 한다.
 
+`authentication`메서드
+```java
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+        String loginId = authentication.getName();
 
+        String password = (String) authentication.getCredentials();
 
+        DomainUserDetails domainUserDetails = (DomainUserDetails) userDetailsService.loadUserByUsername(loginId);
+
+        if (isNotMatches(password, domainUserDetails.getPassword())) {
+            throw new BadCredentialsException(loginId);
+        }
+
+        return new UsernamePasswordAuthenticationToken(domainUserDetails, domainUserDetails.getPassword(), domainUserDetails.getAuthorities());
+    }
+```
+- DB에 인코딩 된 비밀번호화 input된 비밀번호를 비교 해준다
+- 인증 객체의 경우 input id & password를 가지고 있다.
+그리고 load 된 유조 정보를 가지고 우리가 설정된 비밀번호 빈을 가지고 매칭을 시켜준다.
+만악 틀린 비밀번호를시 `BadCredentialsException`를 날려준다. 
+하지만 비밀번호가 정확하다면`UsernamePasswordAuthenticationToken`로 리턴시켜준다.
+- support 메소드를 통해서 클래스 타입에 대한 체크를 해준 후 다음으로 넘어가 인증을 진행 혹은 끝은 낸다.
