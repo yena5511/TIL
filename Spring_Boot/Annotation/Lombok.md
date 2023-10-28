@@ -62,3 +62,81 @@ callSuper 속성을 통해 equals와 hashCode 메소드 자동 생성 시 부모
 
 실제로는 사용하지 않는 것이 좋다
 전체적인 모든 기능 허용으로 위험 존재
+
+
+## @NoArgsConstructor
+
+- 파라미터가 없는 기본 생성자 생성
+
+```java
+@Setter
+@Getter
+@NoArgsConstructor
+public class testDto {
+
+    private String id;
+    private String userName;
+    private String age;
+    private String address;
+    
+}
+
+// 같다.
+
+@Setter
+@Getter
+public class testDto {
+
+    private String id;
+    private String userName;
+    private String age;
+    private String address;
+
+
+    public testDto() {
+    }
+}
+```
+
+## @AllArgsConstructor
+
+모든 필드 값을 파리미터로 받는 생성자를 만들어준다
+
+```java
+@Setter
+@Getter
+@AllArgsConstructor
+public class testDto {
+
+    private String id;
+    private String userName;
+    private String Age;
+    private String address;
+
+
+}
+
+
+// 서로 같다.
+
+@Setter
+@Getter
+public class testDto {
+
+    private String id;
+    private String userName;
+    private String Age;
+    private String address;
+
+    public testDto(String id, String userName, String age, String address) {
+        this.id = id;
+        this.userName = userName;
+        this.Age = age;
+        this.address = address;
+    }
+}
+```
+
+## @RequiredArgsConstructor
+
+`final`이나 `@NonNull`인 필드 값만 파라미터로 받는 생성자를 만들어준다
