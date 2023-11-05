@@ -126,3 +126,46 @@ public class testDto {
 ## @RequiredArgsConstructor
 
 `final`이나 `@NonNull`인 필드 값만 파라미터로 받는 생성자를 만들어준다
+
+##  @Slf4j 
+
+SLF4J: 로깅에 대한 추상 레이어를 제공하는 인터페이스의 모음이다.
+인터페이스를 사용하여 로깅을 구현하게 되면 좋은 점은 추후에 필요로 의해 로깅 라이브러리를 변경할 때 코드의 변경 없이 가능하다는 점이다.
+
+`@SLF4J 사용법`
+
+```java
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@Slf4j
+public class TestController {
+    @GetMapping("/")
+    public String String(String str){
+        try {
+            str.toString();
+        } catch (NullPointerException e){
+            log.trace("가장 디테일한 로그");
+            log.warn("경고");
+            log.info("정보성 로그");
+            log.debug("디버깅용 로그");
+            log.error("에러",e);
+        }
+        return "test";
+    }
+}
+```
+
+`SLF4J 전체적인 과정`
+
+1. 클라이언트 코드에서 SLF4J API를 사용하여 로깅 코드를 작성한다.
+2. 배포할때, 바인딩된 로깅 프레임워크가 실제 로깅 코드를 수행한다.
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fckr8j0%2FbtsbV6aHUOH%2FJ77xl6gIsgEFkTQASXCgI1%2Fimg.png)
