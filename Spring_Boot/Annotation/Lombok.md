@@ -127,6 +127,42 @@ public class testDto {
 
 `final`이나 `@NonNull`인 필드 값만 파라미터로 받는 생성자를 만들어준다
 
+`팔드 주압벙삭을 사용한 기존 Service`
+
+```java
+@RestController
+@RequestMapping("/example")
+public class RequiredArgsConstructorControllerExample {
+
+  private final FirstService firstService;
+  private final SecondService secondService;
+  private final ThirdService thirdService;
+  
+  @Autowired
+  public RequiredArgsConstructorControllerExample(FirstService firstService, SecondService secondService, ThirdService thirdService) {
+    this.firstRepository = firstRepository;
+    this.secondRepository = secondRepository;
+    this.thirdRepository = thirdRepository;
+  }
+}
+```
+
+`@RequiredArgsConstructor 를 활용한 생성자 주입`
+
+```java
+  @RestController
+@RequiredArgsConstructor
+@RequestMapping("/example")
+public class RequiredArgsConstructorControllerExample {
+
+  private final FirstService firstService;
+  private final SecondService secondService;
+  private final ThirdService thirdService;
+  
+  ...
+}
+```
+
 ##  @Slf4j 
 
 SLF4J: 로깅에 대한 추상 레이어를 제공하는 인터페이스의 모음이다.

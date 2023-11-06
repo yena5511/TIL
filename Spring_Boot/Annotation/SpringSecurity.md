@@ -58,3 +58,29 @@ Spring EL(표현식)을 사용할 수 있고, AND나 OR 같은 표현식을 사�
 - 중복 코드를 효율적으로 줄일 수 있다
 
 
+## @EnableWebSecurity
+
+- web security 구성정보를 활성화하기 위해 사용된다.
+- 스프링에서 인증 및 권한을 제공하는 보안 구성을 적용하도록 신호를 보낸다.
+- 주로 `WebSecurityConfigurerAdapter` 클래스를 상속하여 사용한다.
+    - 기본 보안 설정을 제공하고, 메서드 오버라이딩을 통한 보안 커스터마이징을 제공한다.   
+- `@EnableWebSecurity` 어노테이션은 스프링 시큐리티를 활성화하고 웹 보안 설정을 구성하는 데 사용된다.
+
+```java
+   @Configuration
+     @EnableWebSecurity
+     public class SecurityConfig extends WebSecurityConfigurerAdapter {
+         @Override
+         protected void configure(HttpSecurity http) throws Exception {
+             http
+                 .authorizeRequests()
+                     .antMatchers("/public/**").permitAll()
+                     .anyRequest().authenticated()
+                 .and()
+                     .formLogin()
+                 .and()
+                     .logout();
+         }
+     }
+```
+- 위의 예시에서는 `/public` 경로에 대한 접근은 인증 없이 허용하고, 그 외의 모든 요청은 인증을 필요로 하다.
