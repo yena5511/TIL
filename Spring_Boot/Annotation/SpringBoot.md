@@ -91,7 +91,7 @@ DataBase에 접근하는 method를 가지고 있는 Class에서 쓰인다.
 @RequestMapping(value=”“)와 같은 형태로 작성하며, 요청 들어온 URI의 요청과 Annotation value 값이 일치하면 해당 클래스나 메소드가 실행된다.
  Controller 객체 안의 메서드와 클래스에 적용 가능하며, 아래와 같이 사용한다.
 
- - class 단위에 사용하묜 하위 메소드에 모두 적용
+ - class 단위에 사용하면 하위 메소드에 모두 적용
  - 메소드에 적용되면 해당 메소드에서 지정한 방식으러 URI를 처리한다.
 
 
@@ -270,3 +270,38 @@ JUnit에서 테스트 할 대상을 표시한다.
 Annotation 사용으로 인해 특정 Framework에 종속적인 어플리케이션을 구성하지 않기 위해서는 @Resource를 사용할 것을 권장한다.
 @Resource를 사용하기 위해서는 class path 내에 jsr250-api.jar 파일을 추가해야 한다.
 필드, 입력 파라미터가 한 개인 bean property setter method에 적용 가능하다.
+
+#### @PathVariable
+
+REST API에서 URL에 변수가 들어가는걸 실무에서 많이 볼 수 있다.
+예를 들면, 아래 URL에서 `1234`, `4062464`이 @PathVariable로 처리해줄 수 있는 부분이다.
+
+- http://localhost:8080/api/user/_1234_
+- https://music.bugs.co.kr/album/_4062464_
+
+
+Controller에서 아래와 같이 작성하면 간단하게 사용 가능하다.
+
+1. @GetMapping(PostMapping, PutMapping 등 다 상관없음)에 {변수명}
+2. 메소드 정의에서 위에 쓴 변수명을 그대로 @PathVariable("변수명") 
+3. (Optional) Parameter명은 아무거나 상관없음(아래에서 String name도 OK, String employName도 OK)
+
+```java
+@RestControllerpublic class MemberController {     
+    // 기본
+    @GetMapping("/member/{name}")
+    public String 
+findByName(@PathVariable("name") String name ) { 
+           return "Name: " + name; 
+              }   
+              
+    // 여러 개 
+    @GetMapping("/member/{id}/{name}")
+    public String 
+findByNameAndId(@PathVariable("id") String id, @PathVariable("name") String name) {    
+                return "ID: " + id + ", name: " + name;   
+                 }    
+                            }
+
+```
+
