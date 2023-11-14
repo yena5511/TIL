@@ -84,3 +84,46 @@ Spring EL(표현식)을 사용할 수 있고, AND나 OR 같은 표현식을 사�
      }
 ```
 - 위의 예시에서는 `/public` 경로에 대한 접근은 인증 없이 허용하고, 그 외의 모든 요청은 인증을 필요로 하다.
+
+#### @EnableGlobalMethodSecurity
+
+```java
+@Configuration
+@EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터체인에 등록이 됨
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // secured 어노테이션 활성화, preAuthorize, postAuthorize 어노테이션 활성화
+public class SecurityConfig extends WebSecurityConfigurerAdapter {}
+```
+@EnableGlobalMethodSecurity는 Spring AOP proxy를 사용해 구현된 방법이다. 
+사용하는 방법에는 총 3가지가 있는데 3가지 방법을 모두 한번에 사용할 수도 있다. 
+3가지에는 securedEnabled, prePostEnabled, jsr250Enabled라는 설정이 있다. 
+
+-  securedEnabled - @Secured
+    - @Secured 어노테이션으로 인가를 처리하고 싶을 떄 true로 설정한다.
+    - @Secured는 Spring Security2의 lrgacy 어노테이션이다.
+    - @Secured는 SpEL(Spring Expression Languge)를 지원하지 않는다.
+    - @Secured는 한 번에 여러가지 Role으로 인가 처리를 할 수 있다. 예시: (ROLE_ADMIN, ROLE_USER를 가진 유저 모두 )
+    - 그러나 Legacy이기 때문에 prePostEnabled를 사용하는 것이 권장된다. 
+
+-  prePostEnabled - @PreAuthorize
+
+    -  @PreAuthorize를 사용하기 위해서 true로 설정한다.
+    - @PreAuthorize는 SpEL을 사용해서 인가처리가 가능하다. 
+    - @PreAuthorize는 스프링 시큐리티 프레임워크에 일부이다.
+
+`SpEL 예시`
+```
+@PreAuthorize("hasRole('ADMIN') or #user.id == authentication.name")
+```
+
+- jsr250Enabled - @RolesAllowed
+    - @RolesAllowed를 사용하기 위해서 true 설정과 스프링 시큐리티 기능이 아니기 때문에 관련된 라이브러리가 설치되어 있어야한다.
+    -  @RolesAllowed는 JSR-250 Java Security Standard에 기초하고 있고 role-based 인가 기능만 있기 때문에 @PreAuthorize 어노테이션보다 제약이 많다.  
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FAMOaj%2FbtrJB3eKUS6%2Fo7YpJ183YqRA21xDBrbXDK%2Fimg.png)
+
+- Spring Security 두가지 방법
+    - Web
+    - Method: 메소드 별로 권한을 체크하는데 Web 기반과 다르게 필터가 아닌 컨트롤러 단에서 권한을 처리하는 기능이다.
+두개의 Security 적용 방식은 하나만 선택하는게 아니라 동시에 섞어서 사용할 수 있다. 
+Web Security에서 URL과 Token 유무로 인증을 하고 Method Security를 사용해서 권한에 따라 인가를 하는 방법이 있다.
+Rest api에서는 Web Security에서도 권한에 따라 인가를 처리할 수 있기 때문에(antMatcher 사용) 굳이 메소드 기반을 같이 사용하지 않아도 된다. 
