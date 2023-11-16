@@ -37,9 +37,24 @@ Spring EL(표현식)을 사용할 수 있고, AND나 OR 같은 표현식을 사�
 @PreAuthorize("hasRole('ROLE_USER') and hasRole('ROLE_ADMIN')")
  ```
 
+ ```java
+ @PreAuthorize("hasRole('ROLE_ADMIN')")
+public void deleteUser(int userId) {
+    // ...
+}
+ ```
+
  ##### @PostAuthorize
  
  함수를 실행하고 클라이언트한테 응답을 하기 직전에 권한을 검사한다.
+
+ ```java
+ @PostAuthorize("returnObject.userId == authentication.principal.username")
+public Order getOrder(int orderId) {
+    // ...
+    return order;
+}
+ ```
 
 #### @AuthenticationPrincipal
 
