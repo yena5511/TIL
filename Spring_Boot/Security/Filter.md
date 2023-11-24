@@ -49,7 +49,98 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 |RequestCacheAwareFilter| request한 내용을 다음에 필요할 수 있어서 Cache에 담아주는 역할을 한다. 다음 Request가 오면 이전의 Cache값을 줄 수 있다.|
 |SecurityContextHolderAwareRequestFilter|보안 관련 Servlet 3 스펙을 지원하기 위한 필터라고 한다.|
 |RememberMeAuthenticationFilter|아직 Authentication 인증이 안된 경우라면 RememberMe 쿠키를 검사해서 인증 처리해준다.|
+|AnonymousAuthenticationFilter|앞선  필터를 통해 인증이 아직도 안되었으면 해당 유저는 익명 사용자라고 Authentication을 정해주는 역할을 한다. (Authentication이 Null인 것을 방지!!)|
+|SessionManagementFilter|서버에서 지정한 세션정책에 맞게 사용자가 사용하고 있는지 검사하는 역항을 한다.|
+|ExcpetionTranslationFilter|해당 필터 이후에 인증이나 권한 예외가 발생하면 해당 필터가 처리를 해준다.|
+|FilterSecurityInterceptor|사용자가 요청한 request에 들어가고 결과를 리턴해도 되는 권한(Authorization)이 있는지를 체크한다. 해당 필터에서 권한이 없다는 결과가 나온다면 위의 ExcpetionTranslationFilter필터에서 Exception을 처리해준다.|
 
+#### Filter Chain 확인하는 방법
+
+WebSecurityConfigurerAdapter을 상속받아 Filter Chain을 만드는 Class위에 @EnableWebSecurity(debug = true)어노테이션을 붙여주면 현재 실행되는 Security Fiter들을 확인할 수 있다.
+
+
+```java
+
+@Configuration
+@EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CorsConfig corsConfig;
+
+    private final String secret = "sosow0212"; // Use your actual secret key
+
+    @Bean
+    public BCryptPasswordEncoder encoder() {
+        // DB 패스워드 암호화
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public JwtFilter jwtFilter(){
+        return new JwtFilter(secret);
+    }
+
+    @Bean
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+        DefaultHttpFirewall firewall = new DefaultHttpFirewall();
+        firewall.setAllowUrlEncodedSlash(true);
+        return firewall;
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .addFilter(corsConfig.corsFilter())
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .authorizeRequests()
+                .antMatchers("/api/v1/user/**")
+                .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/v1/manager/**")
+                .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/v1/admin/**")
+                .access("hasRole('ROLE_ADMIN')")
+                .anyRequest().permitAll();
+    }
+}
+```
+
+#### Fulter Chain이 적용되는 URL 설정하는 방법
+
+- 해당 filter를 동작시킬 URL을 설정하여면 `http.antMatcher`를 통해  
+설정해야한다.
+- 모든 request에 대해 동작하려면 다음과 같이 `http.antMatcher("/**")`로 하며 /api~~에 대해서 적용을 하고 싶다면 `http.antMatcher("/api/**")` 와 같이 해줘야한다.
+- 여러 종류의 URL에 대해 여러 Filter를 만들고 싶다면 SecurityConfig 클래스를 여러개 만들어줘야하며 여러개의 sequrityConfig은 순서가 중요하여 class위에 `@Order `annotation을 붙여줘야한다.
+
+```java
+@Order(1) // order가 낮은 것부터 먼저 설정을 한다.
+@EnableWebSecurity(debug = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+    
+     	http.antMatcher("/**"); // 해당 filter가 동작할킬 URL을 설정하려면 antMatcher를 통해 설정해야한다.
+       
+        http.authorizeRequests((requests) ->
+                requests.antMatchers("/").permitAll()
+                        .anyRequest().authenticated()
+        );
+        http.formLogin(login->
+                login.defaultSuccessUrl("/", false));
+       http.httpBasic();
+    }
+}
+```
 
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fryt33%2FbtrUWSzQ8B7%2FUyJhUb6DqYeYkP1MikzlBk%2Fimg.png)
 
