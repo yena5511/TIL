@@ -49,3 +49,28 @@ PK의 생성 규칙을 나타낸다.
 문자열의 경우 VARCHAR(255)가 기본값인데, 사이즈를 500으로 늘리고 싶거나(ex: title),
 타입을 TEXT로 변경하고 싶거나(ex: content) 등의 경우에 사용
 
+#### @OnDelete
+
+CascadeType의 속성은 여러가지(ALL, REMOVE, PERSIST)가 있는데 ALL로 쓰면 모든 속성을 사용한다.
+그래서 @OnDelete와 CascadeType.ALL은 둘 다 Cascade의 DELETE 기능을 갖고 있다.
+즉, 기본키 데이터를 삭제할 경우 외래키 데이터도 전부 삭제된다.
+다만 @OnDelete는 프로그램 올라오기 전에 DB 테이블에 접근해서 위처럼 ON DELETE CASCADE를 붙여주는 것이다. 
+CascadeType.ALL 기능은 테이블을 바꾸는 것이 아니라 런타임 도중에 JPA에 의해 실행되도록 만드는 것이다.
+
+JPA는 @OnDelete에 표준화되어있지 않다.
+JPA 자체가 데이터베이스 저장소에 구애받지 않고(storage-agnostic) 사용 하기 위한 기술이기 때문에 테이블을 변경하는 것을 바람직하지 못하다고 여긴다.
+결론은 @OnDelete는 지양하자.
+
+```java
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private User sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id")
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private User receiver;
+
+```
