@@ -305,3 +305,35 @@ findByNameAndId(@PathVariable("id") String id, @PathVariable("name") String name
 
 ```
 
+#### @Transactional
+
+@Transactional을 선언하여 사용한다. 
+클래스 또는 메서드 위에 @Transactional을 붙이면, 트랜잭션 기능이 적용된 프록시 객체가 생성되며, 트랜잭션 성공 여부에 따라 Commit 또는 Rollback 작업이 이루어진다.
+또 다른 방법으로는 트랜잭션 스크립트 방식인데, 하나의 트랜잭션 안에서 동작해야 하는 코드를 한 군데 모아서 만드는 방식이다. 
+이러한 방식 때문에 보통 트랜잭션마다 하나의 메서드로 구성된다.
+메서드의 앞부분에서 DB를 연결하고 트랜잭션을 시작하는 코드가 필요하고, 이렇게 만들어진 
+트랜잭션 안에서 DB를 액세스하는 코드와 그 결과를 가지고 비즈니스 로직을 적용하는 코드가 
+뒤엉켜서 등장한다. 트랜잭션 스크립트 방식을 사용한다면 이런 코드들 때문에 어쩔 수 없는 중복 현상이 빈번하게 발생한다.
+
+```java
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+    private final PayService payService;
+    private final OrderRepository orderRepository;
+
+    @Transactional(readOnly = true)
+    public Mcorder findById(long id) {
+        final Optional<Mcorder> order = orderRepository.findById(id);
+        order.orElseThrow(() -> new OrderNotFoundException(id));
+        return order.get();
+    }
+
+    @Transactional
+    public Mcorder create(Mcorder order) {
+        Mcorder order = orderRepository.save(order);
+        payService.invoke(order.payment);
+        return order;
+    }
+}
+```
