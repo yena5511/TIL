@@ -36,6 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 #### Filter 종류
 
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FHYCaG%2FbtrzragxjXN%2FU4usLguLDdZ9FycK0cU0kK%2Fimg.png)
+
 |Filter|설명|
 |:---|:---|
 |HeaderWriterFilter|Request의 Http 헤더를 검사하여 header를 추가하서나 뺴주는 역할을 한다.|
@@ -171,3 +174,34 @@ OncePerRequestFilter은이를 방지해준다.
 이는 우리가 OncePerRequestFilter을 통해서 동일한 request안에서는 필터링을 한번만 할 수 있게 도와준다.
 
 위의 기능으로 인증, 인가를 거치고 url로 포워딩하면, 포워딩 요청의 인증 인가필터를 다시 거치지 않고 다음 로직을 바로 실행하게 해준다.
+
+
+#### SecurityContextPersistenceFilter
+
+`SecurityContextRepository에서 SecurityContext를 가져오거나 생성`
+
+SecurityContextRepository는 내부적으로 HttpSessionSecurityContextRepository 클래스를 가진다.
+private SecurityContextRepository repo; 의 형식으로 참조하고 있다.
+이 HttpSessionSecurityContextRepository 클래스가 SecurityContext 객체를 생성하고, 세션에 저장힌다.
+또, 세션에 저장된 SecurityContext를 조회하고 참조하는 클래스이다.
+ 
+ 
+SecurityContextRepository에서는 loadContext 메소드로 
+인증을 시도한 사용자가 이전에 세션에 저장한 이력이 있는지 확인한다.
+
+- 처음 인증하거나 혹은 익명 사용자일 경우
+세션에 저장된 것이 없을 테니 SecurityContext을 생성한다.
+SecurityContexHolder안에 저장을 하고 다음 필터를 실행한다.
+
+- 이력이 있을 경우
+SecurityContext를 꺼내와서 SecurityContextHolder에 저장한다.
+따라서 SecurityContext를 따로 생성하지 않는다.
+
+모든 작업이 마쳐서 최종적으로 클라이언트에게 인증하기 직전에는 항상 SecurityContext를 실행한다.
+
+#### LogoutFilter
+
+`로그아웃 요청을 처리`
+ 
+로그아웃 요청 시에만 실행한다.
+
