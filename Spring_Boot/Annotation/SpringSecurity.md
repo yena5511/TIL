@@ -142,3 +142,55 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {}
 두개의 Security 적용 방식은 하나만 선택하는게 아니라 동시에 섞어서 사용할 수 있다. 
 Web Security에서 URL과 Token 유무로 인증을 하고 Method Security를 사용해서 권한에 따라 인가를 하는 방법이 있다.
 Rest api에서는 Web Security에서도 권한에 따라 인가를 처리할 수 있기 때문에(antMatcher 사용) 굳이 메소드 기반을 같이 사용하지 않아도 된다. 
+
+#### @Lazy
+
+Lazy어노테이션은 초기화를 지연시킨다.
+Spring은 기본적으로 즉시 초기화를 기본 값으로 가지고 있다.
+
+Lazy어노테이션을 적용하게 되면 해당 클래스 객체를 사용하려고 할 때 초기화가 되어 사용되게 된다.
+
+```java
+// 초기화는 기본적으로 EAGER (즉시) 방식으로 된다. 어플리케이션을 실행하면 기본적으로 바로 Component 객체가 생성되고 autowiring이 되는 것이다.
+// @Lazy 어노테이션을 통해 초기화를 늦출 수 있다.
+// 지연 초기화를 적용할 경우 해당 Component 객체를 호출해줘야 그 때 초기화되고 호출된다.
+@Component
+class ClassA{
+
+}
+
+@Component
+@Lazy
+class ClassB{
+
+    private ClassA classA;
+
+    public ClassB(ClassA classA){
+        System.out.println("Some Initialization logic");
+        this.classA = classA;
+    }
+
+    public void doSomething(){
+        System.out.println("Do Something");
+    }
+}
+
+@Configuration
+@ComponentScan
+public class LazyInitializationLauncherApplication {
+
+    public static void main(String[] args) {
+
+        try (var context = new AnnotationConfigApplicationContext(LazyInitializationLauncherApplication.class)) {
+//            Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+            System.out.println("Initialization of context is completed");
+            context.getBean(ClassB.class).doSomething(); // 지연시킨 ClassB 객체를 사용하려고 하므로 이때 초기화가 진행.
+        }
+
+    }
+}
+```
+
+초기화에서는 보통 지연 초괴화보다 기본적인 즉시 초기화를 선호한다.
+즉시 초기화는 어플리케이션 구성 단계에서부터 오류가 발생하면 잡아낼 수 있기 때문이다.
+지연초기화는 지연되기 떄문에 오류를 발생시켜 잡으려묜 해당 객체를 사용해야만 오류를 발견할 수 있다.
