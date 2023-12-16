@@ -337,3 +337,35 @@ public class OrderService {
     }
 }
 ```
+
+#### @Qualifier 
+
+bean을 설정할 떄 <context:annotation-config/>를 사용함으로써 굳이 bean 내 그안에 <contstructor-arg>나 <property>태그를 추가하지 않아도 스프링의 @Autowired 어노테이션이 적용된 생성자, 필드, 메서드에 대한 의존 자동 주입을 처리한다.
+
+하지만 동일한 타입을 가진 bean 객체가 두 개가 있다면?
+- 스트링이 어떤 빈을 주인해야 할 지 알 수 없어서 스프링 컨테이너를 초기화하는 과정에서 Exception을 발생시킨다.
+    - @Autowired의 주인 ㅈ대상이 한 개여야 하는데 실제로는 두 개 이상의 빈이 존재해 주입할 때 사용할 객체를 선택할 수 없기 떄문이다.
+    - 단, @Autowired가적용된 필드나 설설정 메서드의 property이름과 같은 이름을 가진 빈 객체가 존재할 경유에는 이름이 같은 빈 객체를 주입받는다.
+
+이런 문제를 해결하기 위해 @Qualifier 사용
+
+- @Qualifier 어노테이션
+    - 사용할 의존 객체를 선택할 수 있도록 해준다.
+    1. 설정에서 bean의 한정자 값을 설정한다.
+    2. @Autowired어노테이션이 적용된 주입 대상에 @Qualifier 어노테이션을 설정한다.
+        - 이때 @Qualifier 의 값으로 앞서 설정한 한정자를 사용한다.
+
+```java
+pubic class MemberDao{  
+    @Autowired  @Qualifier("m1")
+    private Member member;       
+
+    public void setMember(Member member){      
+        this.member = member;  
+    }
+}
+```
+위와같이 @Autowired 어노테이션을 적용한 곳에 @Qualifier 어노테이션을 적용해준다.
+
+- 주의할 점
+    - @Qualifier에 지정한 한정자 값을 갖는 bean 객체가 존재하지 않으면 Exception이 발생한다
