@@ -369,3 +369,31 @@ pubic class MemberDao{
 
 - 주의할 점
     - @Qualifier에 지정한 한정자 값을 갖는 bean 객체가 존재하지 않으면 Exception이 발생한다
+
+#### @Primary
+
+같은 Type의 Bean이 여러개가 필요한 경우도 있다. 
+그럴 때 어노테이션을 붙혀서 우선순위를 지정할 때 사용한다. 
+특정 빈을 우선적으로 주입하고 싶은 경우 해당 어노테이션을 붙여준다.
+
+```java
+@Component
+@Primary
+public class FixDiscountPolicy implement DiscountPolicy{
+    @Override
+    public int discount(int cost){ return cost - 1000;}
+}
+@Component
+public class RateDiscountPolicy implement DiscountPolicy{
+    @Override
+    public int discount(int cost){ return cost - (cost * 1/10);}
+}
+
+
+@Autowierd
+private DiscountPolicy policy; // FixDiscountPolicy 메핑
+```
+
+※ 만약 Primary와 Qualifier를 동시에 사용할 경우 Qualifier가 우선권을 가진다.
+
+
