@@ -396,4 +396,41 @@ private DiscountPolicy policy; // FixDiscountPolicy 메핑
 
 ※ 만약 Primary와 Qualifier를 동시에 사용할 경우 Qualifier가 우선권을 가진다.
 
+#### @jsonIgnore
+
+직렬화 역직렬화에 사용되는 논리적 프로퍼터 값을 무시 할 때 사용된다.
+
+```java
+@jsonIgnore
+public String myName;
+
+
+또한 게터 세터 메서드에서도 사용 가능하다.
+
+@JsonIgnore
+public String getmyName(){
+	return this.myName;
+}
+
+@JsonIgnore
+public void setmyName(String myName){
+	return this.myName = myName;
+}
+
+```
+
+myName필드가 역직렬화할 때 서버는 Unrecognizef find "myNama"와 같은 에러를 던질 것 이다. 작렬화 할 땐  myName 필드가 Json에 담기지 않습니다.
+
+@JsonIgnore어노테이션은 @JsonProperty와 함께 사용될 수 있다. 
+
+```java
+@JsonIgnore
+@JsonProperty("Name")
+private String myName;
+```
+
+myName 프로퍼터에  @JsonProperty("myName")를 추가함으로서 에러를 던지지 않으면서
+JSON의 직렬, 역직렬화 할때 myName필드를 무시할 수 있다.
+
+또한  @JsonIgnore의 속성값으로(false)를 줄 수 있다.
 
