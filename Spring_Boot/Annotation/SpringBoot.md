@@ -434,3 +434,80 @@ JSON의 직렬, 역직렬화 할때 myName필드를 무시할 수 있다.
 
 또한  @JsonIgnore의 속성값으로(false)를 줄 수 있다.
 
+#### @JsonIgnoreProperties
+
+@JsonIgnoreProperties어노테이션은 단위 레벨에 사용되며 지정된 필드값의 JSON직력, 역렬화를 무시할 수 있다.
+
+```java
+@JsonIgnoreProperties({ "bookName", "bookCategory" })
+public class Book {public class Book {
+	@JsonProperty("bookId")
+	private String id;private String id;
+    
+	@JsonProperty("bookCategory")
+	private String category;
+```
+
+위 코드에서 bookname, bookcategory필드는@JsonIgnoreProperties에 지정된어 JSON 직렬, 역직렬화에 담기지 않을 것 이다.
+만약 book클래스 네에 bookid같은 필드가 존재하고, @JsonIgnoreProperties이 적용된다면 book클래스의 모든 필드값은 JSON에 담기지 않을 것이다.
+
+이 말은 즉 @JsonIgnore, @JsonIgnoreProperties은 JSON 직렬, 역직렬화를 무시할때 사용 된다.
+
+@JsonIgnoreProperties 어노테이션은
+allowGetters, allowSetters, ignoreUnknown, value 속성을 가지고 있다.
+
+```java
+@JsonIgnoreProperties
+(
+value={"bookName","bookCategory"}, allowGetters=true
+)
+```
+는 특정 필드가 직렬화는 허용하지만 역직렬화는 허용하지 않게 해주는 어노테이션이다.
+
+```java
+@JsonIgnoreProperties
+(
+value={"bookName","bookCategory"}, allowSettersa=true
+)
+``````
+는 allowGetters와 반대로 역직렬화는 허용하나 직렬화는 허용하지 않게 해주는 어노테이션 이다.
+
+```java
+@JsonIgnoreProperties(ignoreUnknown = true)
+```
+현재 진행중인 프로젝트에서 사용되고 있으며
+아마 가장 많이 쓰이는 어노테이션이라 생각되는 속성이다.
+
+```java
+@JsonIgnoreProperties(ignoreUnknown = true)
+```
+를 사용하게 되면 역직렬화,
+JSON 데이터가 가진 프로퍼티 중에
+자바 class의 vo 프로퍼티에 값이 없는경우
+에러를 던지지 않고 무시된다.
+
+```java
+##Class Person ###
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@Data	//lombok
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class person{
+	private String name;
+    	private int age;
+}
+
+
+##JSON##
+
+{
+	"name" : "han",
+    	"age"  : "29",
+        "language" : "korean",
+        "gender" : "male"
+}
+```
+위의 Person class는 name과 age 프로퍼티를 가지고 있다.
+JSON 데이터는 Person class 존재하지 않는 추가적인 필드가 존재한다.
+Json 데이터의 language, gender는 Person 클래스의 논리적인 필드값에 대응하지 않는다.
+하지만 @JsonIgnoreProperties 의 ignoreUnknown =true 속성을 사용함 으로써 역직렬화(클라이언트 -> 서버)에 예외를 받지 않을것 이다.
