@@ -511,3 +511,26 @@ public class person{
 JSON 데이터는 Person class 존재하지 않는 추가적인 필드가 존재한다.
 Json 데이터의 language, gender는 Person 클래스의 논리적인 필드값에 대응하지 않는다.
 하지만 @JsonIgnoreProperties 의 ignoreUnknown =true 속성을 사용함 으로써 역직렬화(클라이언트 -> 서버)에 예외를 받지 않을것 이다.
+
+#### @JsonIgnoreType
+
+@JsonIgnoreType 어노테이션은 클래스 레벨에 사용되며 클래스내에 존재하는 모든 필드들이 JSON 직렬, 역직렬화에 무시될 것이다.
+(즉 클래스 자체를 JSON 데이터 맵핑에 사용불가)
+마찬가지로 @JsonIgnoreType(false)와 같이 boolean 속성을가지고 있으며
+활성/ 비활성화 할 수 있다.
+//default 값 = true
+
+```java
+@JsonIgnoreType
+class Address{
+	private String address;
+}
+
+public class Writer {
+    @JsonProperty("writerAddress")
+    private Address address;
+}
+```
+프로퍼티 writerAddress는 Writer 클래스의 직렬, 역직렬화에 무시될것 한다.
+만약 Address 클래스에
+@JsonIgnore(false)를 붙혀주시면 활성/비활성화를 컨트롤할 수 있다.

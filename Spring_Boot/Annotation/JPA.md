@@ -49,6 +49,19 @@ PK의 생성 규칙을 나타낸다.
 문자열의 경우 VARCHAR(255)가 기본값인데, 사이즈를 500으로 늘리고 싶거나(ex: title),
 타입을 TEXT로 변경하고 싶거나(ex: content) 등의 경우에 사용
 
+|속설|기능|
+|:---|:---|
+|nama|필드와 매핑할 테이블의 컬럼 이름 지정/default는 필드이름으로 대체|
+|insertable|true : 엔티티 저장시 필드값 저장/false : 필드값이 저장되지 않음|
+|updatable|true : 엔티티 수정시 값이 수정/false : 엔티티 수정시 값이 수정 되지 않음|
+|table|하나의 엔티티를 두 개 이상의 테이블에 매핑할 때 사용
+|
+|nullable|null값 허용 여부 설정/false : not null 제약 조건|
+|columnDefinition|데이터베이스 컬럼 정보를 직접 부여|
+|length|문자 길이 제약조건/String 타입일 때 사용|
+|precision, scale|BigDecimal 타입에서 사용/precision : 소수점을 포함한 전체 자릿수 설정/scale : 소수의 자릿수|
+
+
 #### @OnDelete
 
 CascadeType의 속성은 여러가지(ALL, REMOVE, PERSIST)가 있는데 ALL로 쓰면 모든 속성을 사용한다.
