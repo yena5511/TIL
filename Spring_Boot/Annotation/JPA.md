@@ -61,6 +61,139 @@ PK의 생성 규칙을 나타낸다.
 |length|문자 길이 제약조건/String 타입일 때 사용|
 |precision, scale|BigDecimal 타입에서 사용/precision : 소수점을 포함한 전체 자릿수 설정/scale : 소수의 자릿수|
 
+`insertable`
+```java
+//Entity
+@Entity(name="user2")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(insertable = false)
+    private String name;
+    private String age;
+}
+
+//Service
+@Service
+@RequiredArgsConstructor
+public class TestService {
+    private final EntityManager em;
+    @Transactional
+    public void test() {
+        User user = User.builder()
+                .age("12")
+                .name("test")
+                .build();
+        em.persist(user);
+    }
+}
+
+```
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fepwbne%2FbtqXwcb9yL4%2F19j7ggtEWosKeYZqD7AaD1%2Fimg.png)
+위의 결과는 User 엔티티에 name 컬럼에 "test"를 입력해도 DB에는 값이 들어가지 않는다.
+
+`updatable`
+```java
+//Entity
+@Entity(name="user2")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(updatable = false)
+    private String name;
+    private String age;
+}
+
+//Service
+@Service
+@RequiredArgsConstructor
+public class TestService {
+    private final EntityManager em;
+    @Transactional
+    public void test() {
+        User user = User.builder()
+                .age("12")
+                .name("test")
+                .build();
+        em.persist(user);
+        user.setName("change test");
+    }
+}
+
+```
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbfkAPo%2FbtqXj7iJr7U%2FU4eqMNQ5AsUbDLIkFBG180%2Fimg.png)
+
+위의 결과는 User 엔티티 name 컬럼에 "test"를 입력하고 "change test"로 변경해도 변경값이 적용되지 않는다.
+
+`nullable`
+```java
+@Entity(name="user2")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = true)
+    private String age;
+}
+
+```
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FDzQ2J%2FbtqXu5xA0rp%2Fbqt1TNaS5OrIUckiovLKX1%2Fimg.png)
+위의 결과는 nullable true, false에 따라 not null이 적용되는지 여부이다.
+
+`unique`
+```java
+@Entity(name="user2")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(unique = true)
+    private String name;
+    @Column(unique = false)
+    private String age;
+}
+```
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FUFcKm%2FbtqXDfr9iP8%2FLN2SqTjUVFYhocHSua4B81%2Fimg.png)
+
+`columnDefinition
+`
+```java
+@Entity(name="user2")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    @Column(unique = true)
+    private String name;
+    @Column(columnDefinition = "VARCHAR(15) NOT NULL")
+    private String age;
+}
+```
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb7sOsv%2FbtqXDgdwfsX%2F8aVgqKyTKCA9zMg1a7f6d1%2Fimg.png)
+
 
 #### @OnDelete
 
@@ -87,3 +220,4 @@ JPA 자체가 데이터베이스 저장소에 구애받지 않고(storage-agnost
     private User receiver;
 
 ```
+
