@@ -221,3 +221,99 @@ JPA 자체가 데이터베이스 저장소에 구애받지 않고(storage-agnost
 
 ```
 
+#### Access
+
+@Access는 JPA가 엔티티 데이터에 접근하는 방식을 지정한다.
+
+|접근 방식|기능|
+|:---|:---|
+|AccessType.FILED|필드에 직접 접근/필드 접근 권한이 private여도 접근 가능|
+|AccessType.PROPERTY|getter를 통해 접근|
+
+@Access를 설정하지 않으면 기본키를 설정하는 @Id의 위치를 기준으로 접근 방식 설정
+
+```java
+@Entity(name = "user2")
+@Table(name = "user3")
+@Getter
+@Setter
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+}
+```
+
+위 코드처럼 @Id가 필드에 설정되면 @Access(AccessType.FILED)로 설정된 아래 코드랑 같다.
+
+```java
+@Entity(name = "user2")
+@Table(name = "user3")
+@Getter
+@Setter
+@Access(AccessType.FIELD)
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+}
+```
+
+아래 처럼 getter에 @id를 설정함으로 써 프로퍼티 접근으로 할 수 있다. 아래와 같은 경우 @Id가 getter에 위치하므로 @Access를 생략할 수 있다.
+
+```java
+@Entity(name = "user2")
+@Table(name = "user3")
+@Setter
+@Access(AccessType.PROPERTY)
+public class User {
+
+    @GeneratedValue
+    private Long id;
+
+    @Id
+    public Long getId() {
+        return id;
+    }
+}
+```
+
+필드 접근과 프로퍼티 접근을 혼합하여 아래처럼 사용할 수 있다.
+
+```java
+//Entity
+@Entity(name = "user2")
+@Table(name = "user3")
+@Getter
+@Setter
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Transient
+    private String name;
+
+    @Access(AccessType.PROPERTY)
+    public String getFullName() {
+        return name + " hello";
+    }
+    protected void setFullName(String firstName) { }
+}
+
+//Service
+@Service
+@RequiredArgsConstructor
+public class TestService {
+    private final EntityManager em;
+    @Transactional
+    public void test() {
+        User user = new User();
+        user.setName("aaa");
+        em.persist(user);
+    }
+}
+```
+getter에 AccessType.PROPERTY를 함으로써 getter의 fullName을 column으로 지정한다.
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fplxwm%2FbtqXD2F717o%2FlkqKuMECkuxoHmksMcvoyk%2Fimg.png)
