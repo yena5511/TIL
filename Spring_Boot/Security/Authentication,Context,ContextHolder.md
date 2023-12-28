@@ -61,10 +61,48 @@ Authentication은 인터페이스이며, 인증하는 여러 상황에 따라 �
 
 ## SecurityContextHolder
 
-- SecurityContext 객체 저장 방식
-    - MODE_THREADLOCAL: 스레드당 SecurityContext 객체를 할당, 기본값
-        - 자식 쓰레드와는 공유가 되지 않는다. 공유를 하려면 아래 모드로 변환을 해야한다
-    - MODE_INHERITABLETHREADLOCAL: 메인 스레드와 자식 스레드에 관하여 동일한 SecurityContext를 유지
-    - MODE_GLOBAL: 응용 프로그램에서 단 하나의 SecurityContext를 저장한다
-- 객체 저장 방식은 보안 설정 클래스에서 변경할 수 있다.(앱 기동시 초기화)
-- SecurityContextHolder.clearContext(): SecurityContext 기존 정보 초기화하는 코드
+Authentication를 담고 있는 Holder라고 정의 할 수 있다.
+
+- 기본적으로 ThreadLocal을 사용
+    - 한 스레드 네에서 사용하는 공용 저장소
+    - 스레즈 내에서 Applocation을 공유 할 수 있다.
+    - SecurityContextHolder를 사용
+    - 스레드가 잘라지면 제대로 된 인증 정보를 가져올 수 없음
+- SecurityContextHolder는 싱글톤 객체
+    - SecurityContextHolder가 로드 될 때 한 번 호출된다.
+- 해당 initialize 메소드에서 SecucirtyContextHolder에 대한 전략 방식을 파악
+
+```java
+private static void initialize() {
+        if (!StringUtils.hasText(strategyName)) {
+            strategyName = "MODE_THREADLOCAL";
+        }
+
+        if (strategyName.equals("MODE_THREADLOCAL")) {
+            strategy = new ThreadLocalSecurityContextHolderStrategy();
+        } else if (strategyName.equals("MODE_INHERITABLETHREADLOCAL")) {
+            strategy = new InheritableThreadLocalSecurityContextHolderStrategy();
+        } else if (strategyName.equals("MODE_GLOBAL")) {
+            strategy = new GlobalSecurityContextHolderStrategy();
+        } else {
+            try {
+                Class<?> clazz = Class.forName(strategyName);
+                Constructor<?> customStrategy = clazz.getConstructor();
+                strategy = (SecurityContextHolderStrategy)customStrategy.newInstance();
+            } catch (Exception var2) {
+                ReflectionUtils.handleReflectionException(var2);
+            }
+        }
+
+        ++initializeCount;
+    }
+```
+
+- MODE_THERADLOCAL - 스레드별로 SecurityContext 관리
+MODE_INHERITABLETHREADLOCAL 
+- 상위 쓰레드에서 하위 스레드로 Context 정보를 상속해줌
+- MODE_GLOBAL - SecurityContext를 쓰레드 공용으로 관리
+    - SecurityContext 특성 상 Principal에 사용자 인증저보를 담고있으므로,보안 이슈가 있을 수 있음
+    - 성능저하
+    - JVM에서 제공하는 모든 스레드에서 같은 SecurityContext를 요구할때 사용
+Ex) Java Swing
