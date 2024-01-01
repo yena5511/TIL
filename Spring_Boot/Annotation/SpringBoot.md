@@ -534,3 +534,37 @@ public class Writer {
 프로퍼티 writerAddress는 Writer 클래스의 직렬, 역직렬화에 무시될것 한다.
 만약 Address 클래스에
 @JsonIgnore(false)를 붙혀주시면 활성/비활성화를 컨트롤할 수 있다.
+
+#### @CookieValue
+
+쿠키 값을 파라미터로 전달 받을 수 있는 방법으로, 해당 쿠키가 존재하지 않으면 500에러를 발생시킨다.
+
+```java
+public String view(@CookieValue(value="auth") String auth) {
+	.....
+}
+```
+
+#### @CrossOrigin
+
+CORS보안상의 문제로 브라우저에서 리소스를 현재 origin에서 다른 곳으로 AJAX요청을 방지하기 위해 사용한다.
+@RequestMapping이 있는 곳에 사용하면 해당 요청은 타 도메인에서 온 ajax요청을 처리한다.
+
+```java
+@RestController
+@RequestMapping("/account")
+public class AccountController{
+	
+    @CrossOrigin
+    @RequestMapping("/{id}")
+    public Account retrieve(@PathVariable Long id){
+    	// ...
+    }
+    
+    
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    public void remove(@PathVariable Long id){
+    // ...
+    }
+}
+```
