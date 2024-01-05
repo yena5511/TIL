@@ -1,180 +1,46 @@
-## 프로세스 
+## Process
 
-- 프로그램이 실행돼서 돌아가고 있는 상태 즉 컴퓨터가 어떤 일을 하고 있는 상태를 프로세스라고 한다
+프로세스는 운영체제로부터 자원을 할당받는 작업의 단위로 일반적으로 컴퓨터에서 실행중인 프로그램을 의미한다.
+독립적으로 Memory를 할당받으며, Data를 가진다.
+일반적인 프로그램은 프로세스 단위로 메모리에 적재가 되서 적재된 메모리를 사용자의 요청이 생킬때마다 CPU가 가져가소 작업을 수행한다.
 
-- 여러 프로세스를 함께 돌리는 작업은
-동시적, 병렬적, 또는
-이 둘의 혼합으로 이뤄진다
-    
-    - Concurrency(동시적)
-    프로세스 하나가 이거 조금하고 이거 조금하고 이거 조금하고 이렇게 여러 작업을 돌아가면서 일부분씩 진행되는 것
-    - Perallelusm(병렬적)
-    프로세스 하나가에 코어 여러 개가 달려서 각각 동시에 작업들을 수행하는 것<br>
-    
-    듀얼코어, 쿼드코어, 옥타코어 이런 명칭이 붙는 멀티코어 프로세스가 달린 컴퓨터에서 할 수 있는 방식
+#### Single Process System
 
-## 스레드
+초기의 컴퓨터에는 CPU에서 1개의 프로그램만 실행하며, 2개 이상의 프로그램을 실행하지 못했다.
+즉, 다른 프로그램을 실행하기 위해서는 기존에 사용 중이던 프로그램을 종료해야한다.
 
-- 한 프로세스 내에서도 여러 갈래의 작업들이 동시에 진행될 필요가 있음
-<br>
-이 갈래를 스레드라고 한다
+ingle Process System에서는 CPU에서 실행중인 프로세스가 IO(Input/Output) 작업을 하게 되면, CPU는 그 프로세스의 IO작업이 종료되기 전까지 오로지 대기한다. 
+그리고 그 대기시간동안 CPU는 Resource(자원)를 낭비하게 되는 것이다.
 
-- 프로세스들은 컴퓨터의 자원을 분할해서 쓰지만 스레드는 프로세스마다 주어진 전체 자원을 함께 사용한다
-    - 속도와 효율 면에스는 낫겠지만 
-    오류를 예상하고 방지해야 하기 때문에 스레드를 사용하는 프로그램은 코드를 짜기도, 디버깅을 해서 오류를 찾아내고 원인을 밝히기도 굉장히 까다로운 경우가 많다
+#### Multi Programming
+
+우리는 Single Process System에서 낭비하는 CPU 자원을 막기 위해, IO 작업이 생길 경우 다른 프로세스를 CPU에 실행시켜 CPU의 대기시간을 줄이기로 한다. 
+바로 멀티 프로그래밍(Multi Programming)으로
 
 
-
-
-```java
-import java.util.Scanner;
-
-
-
-public class RamenProgram 
-{
-
-
-
-	public static void main(String[] args) 
-	{
-		int num;
-		Scanner input = new Scanner(System.in);
-		
-		System.out.println("라면 몇 개 끓일까요?");
-		
-		num = input.nextInt();
-		
-		System.out.println(num + "개 주문 완료! 조리시작!");
-		try
-		{
-			RamenCook ramenCook = new RamenCook(num);
-			new Thread(ramenCook,"A").start();
-			new Thread(ramenCook,"B").start();
-			new Thread(ramenCook,"C").start();
-			new Thread(ramenCook,"D").start();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
-	}
-
-}
-
-interface Runnable
-{
-	public void run();
-}
-
-
-class currentThread extends Thread
-{
-	public RamenCook ramenCook;
-	static String nam;
-	
-	currentThread()
-	{
-		this(new RamenCook(5) , "");
-	}
-	
-	currentThread(RamenCook ramenCook , String nam)
-	{
-		this.ramenCook = ramenCook;
-		this.nam = nam;
-	}
-}
-
-
-
-class RamenCook extends Thread implements Runnable
-{
-	private int ramenCount;
-	private String[] burners = {"_","_","_","_"};
-	
-	public RamenCook(int count)
-	{
-		ramenCount = count;
-	}
-	
-	@Override
-	public void run()
-	{
-		while(ramenCount > 0)
-		{
-			synchronized(this)
-			{
-				ramenCount--;
-				System.out.println(Thread.currentThread().getName() + " : " + ramenCount + "개 남았습니다");
-			}
-			
-			for(int i = 0; i < burners.length; i++)
-			{
-				if(!burners[i].equals("_"))
-				{
-					continue;
-				}
-				
-				synchronized(this)
-				{
-					//if(burners[i].equals("_"))
-					//{
-						burners[i] = Thread.currentThread().getName();
-						System.out.println("                 " + Thread.currentThread().getName() + " : [" + (i + 1) + "]번 버너 ON");
-						showBurners();
-					//}
-				}
-				
-				try
-				{
-					Thread.sleep(2000);	
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				
-				synchronized(this)
-				{
-					burners[i] = "_";
-					System.out.println("                                  " + Thread.currentThread().getName() + " : [" + (i + 1) + "]번 버너 OFF" );
-					showBurners();
-				}
-				break;
-			}
-			
-			try
-			{
-				Thread.sleep(Math.round(1000 * Math.random()));
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	private void showBurners()
-	{
-		String stringToPrint = "                                                             ";
-		for(int i = 0; i < burners.length; i++)
-		{
-			stringToPrint += (" " + burners[i]);
-		}
-		System.out.println(stringToPrint);
-	}
-
-
-}
 ```
+멀티 프로그래밍은 CPU에서 실행중인 프로세스가 IO 작업이 생기면 그 동안 다른 프로세스를 CPU에서 실행시키는 방법을 의미한다.
+```
+이를 통해 CPU의 대기 시간이 줄어들게 되고, CPU 자원의 낭비를 줄일 수 있게 되는 것이다.
 
-- RamenProgram이란 클래스 안에 메인 메소드를 돌리면 RamanProgram 클래스
-- RamenCook이란 별도의 클래스기 있음
--  RamencCook은 Runnable이란 인터페이스를 사용했는데 이 말은, 이 클래스에 필수적으로 run이란 함수가 있어서 스레드에서 진행할 작업을 여기다 정의하는 뜻
-- 변수가 끓어야 할 라면의 수가 Interger로, 그리고 각 버너의 상태가 String 배열로 나온다
-- 생성자에서 끓일 라면의 갯루를 받아와서 ramenCount에 적용
-- showBurners함수를 만들어서 실행되는 시점마다 버너들의 상태를 출력
-- synchronizes 블록<br>
-이 안에 있는 변수들은 한 번에 한 스레드만 손을 댈 수 있음
+하지만 멀티 프로그래밍에는 여전히 구조적인 단점
+- 1개의 프로세스가 IO 작업 없이 CPU에서 계속 실행되고 있으면, 다른 프로세스는 실행되지 못하고 대기해야 하기 때문이다.
+이 경우 위의 Single Process System과 크게 다르지 않음을 알 수 있다.
+- 멀티 프로그래밍은 자원 낭비 문제를 개선하기도 했지만, 우리가 원하는 '동시에' 실행 시키는 방법과는 거리가 멀었다.
 
+#### Multi Tasking
+
+멀티 태스킹(Multi Tasking)은 CPU의 사용 시간을 굉장히 짧은 시간 단위(Time Slot)로 분할하는 방법이다.
+
+task는 어떤 정해진 일을 수행하기 위한 명령어의 집합으로 프로세스의 개념보다 조금 확장된 개념으로 볼 수 있다.
+이러한 task가 하나의 CPU에서 운영체제의 스케줄링에 따라 조금씩 번갈아 가면서 수행되는 것이 멀티 태스킹이다.
+
+- 예
+500ms씩 점유하는 2개의 프로세스가 있고, 1개의 Time Slot을 10ms 라고 가정한다.
+
+각 프로세스는 CPU에서 실행될 때 10ms의 단위로 반복해서 실행된다.
+이는 멀티 프로그래밍에 비해 프로세스의 실행시간이 체감상 느려졌지만, 2개의 Process가 동시에 실행되는 것처럼 느낄 수 있다.
+
+각 프로세스는 최소한의 실행 시간을 보장하게되고, 1개의 프로세스만 CPU를 독점하는 상황을 방지하게 된다.
+
+한 CPU를 여러 프로세스가 교대로 수행해야하기 떄문에, 이 시기의 프로그램들은 응답시간을 최소화시키는 것을 목적으로 하고 개발되었다.
