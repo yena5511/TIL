@@ -47,3 +47,55 @@ DAO의 인터페이스는 데이터베이스의 CRUD 쿼리와 1:1 매칭 되는
 반면 REPOSITORY는 메모리에 로드된 객체 컬렉션에 대한 집합 처리를 위한 인터페이스를 제공한다.
 DAO가 제공하는 오퍼레이션이 REPOSITORY 가 제공하는 오퍼레이션보다 더 세밀하며, 결과적으로 REPOSITORY에서 제공하는 하나의 오퍼레이션이 DAO의 여러 오퍼레이션에 매핑되는 것이 일반적이다. 
 따라서 하나의 REPOSITORY 내부에서 다수의 DAO를 호출하는 방식으로 REPOSITORY를 구현할 수 있다.
+
+## VO
+
+VO(Value Oject)는 값 그 자체를 표현하는 객체이다.
+객체의 정보가 변경되지 않는 '불변성'을 보장한다.
+
+- VO 내부에 선언된 속성(필드)의 모든 값들이 VO객체마다 값이 같아야 똑같은 객체라고 판별한다.
+- 서로 다른 이름을 갖는 VO 인스턴스라도 모든 속성 값이 같다면 두 인스턴스는 같은 객체로 인식
+- VO에서 객체를 속성 값만으로 비교하도록 Object클래스의 `equals()`와 `hashcode()`를 오버라이딩해 구현한다.
+- getter와 setter을 가질 수 있으며, 그 외의 로직도 가질 수 있음(테이블 내 있는 속성 외 추가적인 속성을 가질 수 있음)
+
+ex) 만원짜리의 지폐의 고유번호가 달라도 같은 만원으로 보는 것처럼 "값" 자체로만 비교를 한다.
+
+```java
+public class Money{
+	private final int value;
+    
+    public Money(int value) { // 생성자
+    	this.value = value;
+    }
+    
+    public int getHalfValue(){ // setter/getter 외의 로직 추가 가능
+    	return value/2;
+    }
+    
+    // equals()와 hashcode()를 오버라이딩
+    @Override
+    public boolean equals(Object o) {
+    	if(this == o) return true;
+        if(!(o instanceof Money)) retrun false;
+        Money money = (Money) o;
+        return value == money.value;
+    }
+    
+    @Override
+    public boolean hashCode() {
+    	return Objects.hash(value);
+    }
+}
+```
+
+#### VO vs DTO
+
+둘 다 데이터를 담고있는 객체지만 차이점이 있다.
+
+- VO의 경우 Read only의 목적이 강하고 데이터 자체도 불변하게 설계하는 것이 정석이다.
+- DTO는 주로 데이터 수집의 용도가 좀 더 강하자.
+
+ex) 웹 화면에서 로그인하는 정보는 `DTO`로 처리하고, 테이블과 관련된 데이터는 `VO`로 처리한다.
+
+
+
