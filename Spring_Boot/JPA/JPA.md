@@ -1,4 +1,4 @@
-#### JPA(Java Persistence API)
+## JPA(Java Persistence API)
 
 JPA는 자바 진영에서 OMR(object-Relational Mapping) 기술 표준으로 사용되는 인터페이스 모음이다.
 즉, 실제적으로 구현된것이 아니라 구현된 클래스와 매핑을 해주기 위해 사용되는 프레임워크이다.
@@ -12,6 +12,14 @@ ORM(Object-Relational Mapping)
 우리가 일반적으로 알고있는 애플리케이션 class와 RDB(Relational DataBase)의 테이블을 매핑(연결)한다는 뜻이며,
 기술적으로는 어플리케이션의 객체를 RDB테이블에 자동으로 영속화 해주는 것이라고 보면된다.
 ```
+
+#### 동작 과정
+
+![](https://gmlwjd9405.github.io/images/inflearn-jpa/jpa-insert-structure.png)
+
+JPA는 애플리케이션과 JDBC사이에서 동작한다.
+JPA 내부에서 JDBC API를 사용하요 SQL을 호출하여 DB와 통신한다.
+
 
 #### 장점
 
@@ -37,15 +45,22 @@ ORM(Object-Relational Mapping)
 
 #### 사용하는 이유
 
-JPA는 반복적인 CRUD SQL을 처리해준다.
-JPA는 매핑된 관계를 이용해서 SQL을 생성하고 실행하는데, 개발자는 어떤 SQL이 실행될지 생각만하면 되고, 예측도 쉽게 할 수 있다.
-추가적으로 JPA는 네이티브 SQL이란 기능을 제공해주는데 관계 매핑이 어렵거나 성능에 대한 이슈가 우려되는 경우 SQL을 직접 작성하여 사용할 수 있다.
+기존의 개발 방식은 SQL 중심적인 개발이었다.
+JPA를 사용하면 객체 중심으로 애플리케이션 개발이 가능하다.
 
+`생산성(CRUD)`
 
-JPA를 사용하여 얻을 수 있는 가장 큰 것은 SQL아닌 객체 중심으로 개발할 수 있다는 것이다.
-이에따라 당연히 생산성이 좋아지고 유지보수도 수월하다.
-또한 JPA는 패러타임의 불일치도 해결하였다.
-예를 들면 JAVA에서는 부모클래스와 자식클래스의 관계 즉, 상속관계가 존재하는데 데이터베이스에서는 이러한 객체의 상속관계를 지원하지 않는다(상속 기능을 지원하는 DB도 있지만 객체 상속과는 다름). 
-이런 상속관계를 JPA는 아래와 같은 방식으로 해결하였다.
+JPA를 사용하면 기본적으로 생산성이 높아진다.
+JDBC 방식의 경우 SQL 쿼리문을 직접 작성해야 데이터베이스에 접근할 수 있다.
+하지만, JPA는 쿼리문을 별도로 작성할 필요가 없다.
 
-![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcQBTLI%2Fbtq0SkrYdTr%2Fm7EgkroBjYnGKKVkf0LPn0%2Fimg.png)
+- 저장: jpa.persist(memnber)
+- 조회: Member member = jpa.find(memberId)
+- 수정 : member.setName(”변경할 이름”)
+- 삭제 : jpa.remove(member)
+
+`유지보수`
+
+기존에는 엔티티 클래스의 필드가 변경되면 모든 SQL을 수정해야 했다.
+JPA에서는 쿼리를 직접 작성하지 않기 때문에 필드가 변경되더라도 매핑 정보만 잘 연결하면 SQL문을 자동으로 작성된다.
+
