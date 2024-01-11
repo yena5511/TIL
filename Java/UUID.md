@@ -31,5 +31,5 @@ public class UUIDTest {
 //출력
 //UUID 1 => sf5e8400-53m2-nn53-me09-456292156231
 //UUID 2 => 550e8400-e29b-41d4-a716-446655440000
-출처: https://hajoung56.tistory.com/88 [무사뎀벨레의 블로그:티스토리]
+
 ```
