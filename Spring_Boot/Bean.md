@@ -69,3 +69,26 @@ public class HelloConfiguration {
     }
 
 ```
+
+####  BeaDefinition
+
+- 스프링 프레임워크에서 빈의 정의를 나태내는 구성 메타데이터이다.
+이는 빈의 클래스, 범위, 라이프사이클 콜백, 의존성 및 기타 구성 세부 정보에 대한 정보를 제공한다.
+- 스프링 컨테이너가 제공된 구성에 따라 빈 인스턴스를 생성하고 관리하는 데 사용된다.
+이는 런타임에서 빈 객체를 생성하기 위한 역할을 한다.
+
+#### BeanFactory
+
+- 스프링의 핵심 인터페이스로, 빈의 생성, 관리, 검색 등을 담당한다.
+- 빈을 등록하고 필요한 시점에 빈을 가져와서 사용할 수 있다.
+빈의 지연 로딩을 지원하고, XML 또는 annotation기반으로 빈을 설정할 수 있다.
+
+#### ApplicationContext
+
+- BeanFactory의 하위 인터페이스로, 빈 컨테이너의 기능을 확장한 것이다.
+- BeanFactory의 모든 기능을 포함하며, 추가적인 기능을 제공한다.
+예를 들어, ApplicationContext는 메시지 리소스 번들, 이벤트 발생 및 처리, AOP등의 기능을 지원한다.
+- 또한 ApplicationContext는 다양한 형식으로 빈을 설정할 수 있다.
+XML, annotation, 자바 설정 클래스 등을 사용하여 빈을 정의하고 관리할 수 있다.
+
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbZpzTN%2FbtsziPkuE67%2FlKTz2xI7NDkkVW8UHYZui0%2Fimg.png)
