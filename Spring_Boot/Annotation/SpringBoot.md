@@ -568,3 +568,36 @@ public class AccountController{
     }
 }
 ```
+
+#### @ConfigurationProperites
+
+Spring boot 는 configuration 몇몇 속성을 *.properties 혹은 *.yaml 에서 쉽게 가져오는 방법을 제공하기 시작했다.
+
+application.properties 나 application.yml 의 속성을 가져올 때 기존엔 다음과 같이 사용했을 것이다.
+```java
+@Value( "${jdbc.url}" )
+private String jdbcUrl;
+```
+하지만, 이젠 이를 더 객체지향적으로 다룰 수 있으며, 덕분에 테스트에 사용하기도 편리해졌다.
+
+@ConfigurationProperties는 프로퍼티에 있는 값을 클래스로 바인딩하기 위해 사용되는 어노테이션이다. @ConfigurationProperties는 값의 바인딩을 위해 Setter를 필요로 하며 생성자로 바인딩하기 위해서는 @ConstructorBinding을 붙여주어야 한다. 
+
+```yaml
+mail:
+	hostname: host@mail.com
+	port: 9000
+	mail: mailer@mail.com
+```
+이 속성을 다음과 같이 가져와서 사용할 수 있다.
+```java
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "mail")
+public class ConfigProperties {
+    
+    private String hostName;
+    private int port;
+    private String from;
+
+}
+```
