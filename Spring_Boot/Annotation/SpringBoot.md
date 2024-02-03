@@ -323,7 +323,7 @@ findByNameAndId(@PathVariable("id") String id, @PathVariable("name") String name
     - 자동으로 트랜잭션을 시작하고 커밋 또는 롤백할 수 있다.
     - 트랜잭션 경계를 명시적으로 설정할 필요가 없다.
     - 예외 발생 시 롤백이 처리된다.
-    
+
 ```java
 @Service
 @RequiredArgsConstructor
@@ -608,5 +608,45 @@ public class ConfigProperties {
     private int port;
     private String from;
 
+}
+```
+
+#### @Valid
+
+- 빈 검증기를 이용해 객체의 제약 조건을 검증하도록 지시하는 어노테이션이다.
+- SFR 표준의 빈 검증 기술의 특징은 객체의 필드에 달린 어노테이션으로 편리하게 검증을 한다는 것이다.
+- Spring에서는 일종의 어댑터인 LocalValidatorFactoryBean가 제약 조건 검증을 처리한다. 
+이를 이용하려면 LocalValidatorFactoryBean을 빈으로 등록해야 하는데, SpringBoot에서는 아래의 의존성만 추가해주면 해당 기능들이 자동 설정된다.
+
+```java
+implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+```
+
+```java
+@Getter
+@RequiredArgsConstructor
+public class AddUserRequest {
+
+	@Email
+	private final String email;
+
+	@NotBlank
+	private final String pw;
+
+	@NotNull // null이 아님을 확인
+	private final UserRole userRole;
+
+	@Min(12) // 해당 값의 최솟값을 지정
+	private final int age;
+
+}
+```
+
+다음과 같이 컨트롤러의 메서드에 @Valid를 붙여주면 유효성 검증이 진행된다.
+
+```java
+@PostMapping("/user/add") 
+public ResponseEntity<Void> addUser(@RequestBody @Valid AddUserRequest addUserRequest) {
+      ...
 }
 ```
