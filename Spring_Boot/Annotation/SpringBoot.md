@@ -618,6 +618,25 @@ public class ConfigProperties {
 - Spring에서는 일종의 어댑터인 LocalValidatorFactoryBean가 제약 조건 검증을 처리한다. 
 이를 이용하려면 LocalValidatorFactoryBean을 빈으로 등록해야 하는데, SpringBoot에서는 아래의 의존성만 추가해주면 해당 기능들이 자동 설정된다.
 
+|annotation|설명|
+|:---|:---|
+|@Null|Null만 입력 가능|
+|@NotNull|Null 불가|
+|@NotEmpty|Null, 빈 문자열 불가|
+|@NotBlank|Null, 빈 문자열, 스페이스만 있는 문자열 불가|
+|@Size(min=,max=) | 값이 min과 max사이에 해당하는가? (CharSequence, Collection, Map, Array에 해당)|
+|@Pattern(regex=) |정규식을 만족하는가?|
+|@Positive |양수만 가능|
+|@PositiveOrZero|양수와 0만 가능|
+|@Negative|음수만 가능|
+|@NegativeOrZero|음수와 0만 가능|
+|@Digits(integer=, fraction = ) |대상 수가 지정된 정수와 소수 자리 수 보다 작은가?|
+|@Max(숫자)|값이 Max보다 큰지 확인|
+|@Min(숫자) |값이 Min보다 작은지 확인|
+|@Email |이메일 형식만 가능|
+|@AssertTrue |true 인가?|
+|@AssertFalse |false 인가?|
+
 ```java
 implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 ```
