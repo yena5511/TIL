@@ -669,3 +669,21 @@ public ResponseEntity<Void> addUser(@RequestBody @Valid AddUserRequest addUserRe
       ...
 }
 ```
+
+#### @PathVariable
+
+- 경로 변수를 표시하기 위해 메서드에 매개변수에 사용된다.
+- 경로 변수는 중괄호 {id}로 둘러싸인 값을 나타낸다.
+- URL 경로에서 변수 값을 추출하여 매개변수에 할당한다.
+- 기본적으로 경로 변수를 반드시 값을 가져야 하며, 값이 없는 경우 404오류가 발생
+- 주로 상세 조회, 삭제와 같은 작업에서 식별자로 사용
+- 여러 개의 PathVariable을 동시에 사용할 수 있다.
+
+```java
+ @DeleteMapping("/{comment_id}")
+    public ResponseEntity<String> delete(@PathVariable Long comment_id){
+        commentService.deleteComment(comment_id);
+        return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제가 완료되었습니다.");
+    }
+````
+@PathVariable의 이름과 url의 괄호 안의 이름이 같은 경우 data에 해당 값을 저장한다.
