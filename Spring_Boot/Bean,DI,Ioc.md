@@ -184,6 +184,7 @@ public class Foo {
 Spring이 외부에서 bar를 찾고 Foo에 넣어준다.
 코드가 간결해졌지만, 유닛 테스트도 힘들어질뿐더러 서로 참조를 하다가 순환 참조가 생길 수 있는데, 이때 이를 찾기가 힘들어진다.
 
+<<<<<<< HEAD
 <<<<<<<< HEAD:Spring_Boot/Bean,DI.md
 ## Ioc (Inversion of Control)
 
@@ -205,3 +206,6 @@ Spring이 외부에서 bar를 찾고 Foo에 넣어준다.
 3. 의존성 객체 메서드 호출
 ========
 >>>>>>>> 86634eb (DI):Spring_Boot/Bean,DI,Ioc.md
+=======
+
+>>>>>>> d508230 (DI)
