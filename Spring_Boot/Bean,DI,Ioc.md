@@ -101,8 +101,13 @@ public class Foo {
     private Bar bar;
     
     public Foo() {
+<<<<<<<< HEAD:Spring_Boot/Bean,DI.md
         //Foo가 bar를 만드는 중!
         bar = new SubBar();
+========
+    	//Foo가 bar를 만드는 중!
+    	bar = new SubBar();
+>>>>>>>> 86634eb (DI):Spring_Boot/Bean,DI,Ioc.md
     }
 }
 ```
@@ -114,7 +119,11 @@ public class Foo {
     private Bar bar;
     
     public void setBar(Bar bar) {
+<<<<<<<< HEAD:Spring_Boot/Bean,DI.md
         this.bar = bar;
+========
+    	this.bar = bar;
+>>>>>>>> 86634eb (DI):Spring_Boot/Bean,DI,Ioc.md
     }
 }
 ```
@@ -132,7 +141,11 @@ public class Foo {
     
     @Autowired
     public Foo(Bar bar) {
+<<<<<<<< HEAD:Spring_Boot/Bean,DI.md
         this.bar = bar;
+========
+    	this.bar = bar;
+>>>>>>>> 86634eb (DI):Spring_Boot/Bean,DI,Ioc.md
     }
 ```
  Foo객체를 생성할 때 bar 객체를 매개변수로 전달해 주면 의존성 주입이 된다.
@@ -150,7 +163,11 @@ ppublic class Foo {
     
     @Autowired
     publid void setBar(Bar bar) {
+<<<<<<<< HEAD:Spring_Boot/Bean,DI.md
         this.bar = bar;
+========
+    	this.bar = bar;
+>>>>>>>> 86634eb (DI):Spring_Boot/Bean,DI,Ioc.md
     }
 }
 ```
@@ -167,6 +184,7 @@ public class Foo {
 Spring이 외부에서 bar를 찾고 Foo에 넣어준다.
 코드가 간결해졌지만, 유닛 테스트도 힘들어질뿐더러 서로 참조를 하다가 순환 참조가 생길 수 있는데, 이때 이를 찾기가 힘들어진다.
 
+<<<<<<<< HEAD:Spring_Boot/Bean,DI.md
 ## Ioc (Inversion of Control)
 
 메소드나 객체의 호출작업을 개발자가 결정하는 것이 아니라, 외부에서 결정되는 것을 의미한다.
@@ -185,3 +203,5 @@ Spring이 외부에서 bar를 찾고 Foo에 넣어준다.
 2. 의존성 객체 주입
 (스스로가 만드는 것이 아니라 제어권을 스프링에게 위임하여 스프링이 만들어놓은 객체를 주입한다.)
 3. 의존성 객체 메서드 호출
+========
+>>>>>>>> 86634eb (DI):Spring_Boot/Bean,DI,Ioc.md
