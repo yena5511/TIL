@@ -92,3 +92,77 @@ public class HelloConfiguration {
 XML, annotation, 자바 설정 클래스 등을 사용하여 빈을 정의하고 관리할 수 있다.
 
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbZpzTN%2FbtsziPkuE67%2FlKTz2xI7NDkkVW8UHYZui0%2Fimg.png)
+
+## DI (Dependency Injection)
+
+```java
+//HAS-A 관계
+public class Foo {
+    private Bar bar;
+    
+    public Foo() {
+        //Foo가 bar를 만드는 중!
+        bar = new SubBar();
+    }
+}
+```
+Bar클래스에 대해 수정할 거면 Foo클래스도 마찬가지로 수정해줘야 한다.
+
+```java
+//DI 사용
+public class Foo {
+    private Bar bar;
+    
+    public void setBar(Bar bar) {
+        this.bar = bar;
+    }
+}
+```
+
+new연산자를 사용하지 않는다.
+Foo 클래스가 bar를 사용하긴 하는데 내가 직접 만들어 사용하진 않고 외부에서 생성된 bar객체를 주입받는 것이다.
+
+#### DI문법
+
+1. 생성자 주입
+
+```java
+public class Foo {
+    private final Bar bar;
+    
+    @Autowired
+    public Foo(Bar bar) {
+        this.bar = bar;
+    }
+```
+ Foo객체를 생성할 때 bar 객체를 매개변수로 전달해 주면 의존성 주입이 된다.
+
+- 장점
+    - 단위 테스트가 쉽다.
+    - 주이 받는 객체의 final선언이 가능하다.
+    - 객체의 생성자는 1번 호출되는 것이 보장되기 때문에 주입받는 객체가 변하지 않거나 반드시 객체의 주입이 필요할 때 사용할 수 있다.
+
+2. Setter주입
+
+```java
+ppublic class Foo {
+    private Bar bar;
+    
+    @Autowired
+    publid void setBar(Bar bar) {
+        this.bar = bar;
+    }
+}
+```
+주입받는 객체가 변할 수 있을 때에 사용한다.
+
+3. 필드 주입
+
+```java
+public class Foo {
+    @Autowired
+    pirvate Bar bar;
+}
+```
+Spring이 외부에서 bar를 찾고 Foo에 넣어준다.
+코드가 간결해졌지만, 유닛 테스트도 힘들어질뿐더러 서로 참조를 하다가 순환 참조가 생길 수 있는데, 이때 이를 찾기가 힘들어진다.
