@@ -123,11 +123,9 @@ public class testDto {
 }
 ```
 
-## @RequiredArgsConstructor
+## @RequiredArgsConstructo
 
-`final`이나 `@NonNull`인 필드 값만 파라미터로 받는 생성자를 만들어준다
-
-`팔드 주압벙삭을 사용한 기존 Service`
+- 필드 주입방식을 사용한 기존 Service
 
 ```java
 @RestController
@@ -147,7 +145,7 @@ public class RequiredArgsConstructorControllerExample {
 }
 ```
 
-`@RequiredArgsConstructor 를 활용한 생성자 주입`
+- @RequiredArgsConstructor 를 활용한 생성자 주입
 
 ```java
   @RestController
@@ -162,6 +160,8 @@ public class RequiredArgsConstructorControllerExample {
   ...
 }
 ```
+- DI 방식에는 필드 주입, 수정자 주입, 생성자 주입 3가지 방법이 있는 이중에 생성자 주입방식을 가장 권장
+- @RequiredArgsConstructor어노테이션은 클래스에 선언된 final 변수들, 필드들을 매개변수로 하는 생성자를 자동으로 생성해주는 어노테이션
 
 ##  @Slf4j 
 
