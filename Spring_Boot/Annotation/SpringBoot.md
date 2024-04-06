@@ -611,6 +611,38 @@ public class ConfigProperties {
 }
 ```
 
+#### @ConstructorBinding 
+
+```java
+@ConstructorBinding
+@ConfigurationProperties("config.person")
+@RequiredArgsConstructor @ToString
+public class Person {
+    private final String name;
+    private final int age;
+}
+```
+- spring boot 2.2 부터
+- 생성자를 통해 주입받을 수 있다.
+- 필드들을 final로 선언가능
+- setter을 없어도 가능
+
+spring boot 3부터는 생성자와 어노테이션에만 붙일 수 있게 되었다.
+```java
+@ConfigurationProperties("config.person")
+@ToString
+public class Person {
+    private final String name;
+    private final int age;
+
+    @ConstructorBinding
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+```
+
 #### @Valid
 
 - 빈 검증기를 이용해 객체의 제약 조건을 검증하도록 지시하는 어노테이션이다.
@@ -687,3 +719,4 @@ public ResponseEntity<Void> addUser(@RequestBody @Valid AddUserRequest addUserRe
     }
 ````
 @PathVariable의 이름과 url의 괄호 안의 이름이 같은 경우 data에 해당 값을 저장한다.
+
