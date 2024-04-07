@@ -720,3 +720,35 @@ public ResponseEntity<Void> addUser(@RequestBody @Valid AddUserRequest addUserRe
 ````
 @PathVariable의 이름과 url의 괄호 안의 이름이 같은 경우 data에 해당 값을 저장한다.
 
+#### @PostConstruct
+
+- 의존성 주입이 완료된 후에 실행되어야 하는 method에 사용
+- 해당 어노테이션은 다른 리소스에서 호출되지 않아도 수행
+- 생성자 보다 늦게 호출
+
+**호출 순서**
+
+1. 생성자 호출
+2. 의존성 주입 완료 (@Autowired || @RequiredArgsConstructor )
+3. @PostConstruct
+
+
+**장점**
+- @PostConstruct를 사용하면, 초기화 됨과 동시에 의존성을 확인할 수 있다. 
+- bean lifecycle에서 오직 한 번만 수행된다는 것을 보장할 수 있다. 
+    - bean이 여러번 초기화되는 것을 방지
+
+```java
+@Servicepublic class BusinessServiceImpl implements BusinessService{     
+    
+    @Autowired    
+    DataDAO dataDAO;
+    
+    private ParamDTO paramDTO;     
+    
+    @PostConstruct    
+    public void initialize(){       
+        paramDTO = new ParamDTO();    
+    }
+}
+```    
