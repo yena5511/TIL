@@ -752,3 +752,32 @@ public ResponseEntity<Void> addUser(@RequestBody @Valid AddUserRequest addUserRe
     }
 }
 ```    
+
+####  @SpringBootApplication
+
+- Spring Boot에서 애플리케이션을 실행하는 중요한 역할을 담당한다.
+-  자동 설정을 해주기 위한 어노테이션으로, org.springframework.boot.autoconfigure 패키지에 들어 있다.
+
+```java
+@SpringBootApplication
+public class GAuthPracticceApplication {
+
+    public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+        SpringApplication.run(GAuthPracticceApplication.class, args);
+    }
+
+}
+```
+
+- @SpringBootConfiguration
+    - 어플리케이션의 구성을 제공하는 class-level의 어노테이션이다.
+    - @Configuration 적용시 해당 클래스에 구현한 @Bean을 Spring 컨테이너에 포함시킬 수 있다.
+    - @Indexed 적용시, 해당 어노테이션을 적용한 클래스(인터페이스)가 있을 경우 해당 클래스를 상속(extends)하거나 구현(implements)할 경우 해당 클래스(인터페이스)의 스테레오 타입에 자동으로 포함된다.
+- @EnableAutoConfiguration
+    - Spring Boot가 어플리케이션 컨텍스트를 자동 구성할 수 있도록 도움을 준다.
+- @ComponentScan
+    - @Component를 명시한 클래스들을 Scan하여 Bean을 생성한다.
+
+크게 세 개의 어노테이션을 합쳐놓은 구성이다.
+
