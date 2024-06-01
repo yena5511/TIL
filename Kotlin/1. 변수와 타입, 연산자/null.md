@@ -61,3 +61,32 @@ println(str?.length ?: 0)
 
 ```
 결과: 0
+
+- 널 아님 단언
+
+nullable type이지만, 아무리 생각해도 null이 될 수 없는 경우
+
+!! => 절대 null이 아님
+
+```kotlin
+fun main(){
+    println(startWith("ABC"))
+}
+fun startWith(str: String?):Boolean{
+    return str!!.startsWith("A")
+}
+```
+결과: true
+
+만약 Null인경우
+
+```kotlin
+fun main(){
+    println(startWith(null))
+}
+fun startWith(str: String?):Boolean{
+    return str!!.startsWith("A")
+}
+```
+
+결과: NullPointrException
