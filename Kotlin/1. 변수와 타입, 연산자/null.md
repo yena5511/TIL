@@ -90,3 +90,57 @@ fun startWith(str: String?):Boolean{
 ```
 
 결과: NullPointrException
+
+- 플랫폼 타입
+
+ kotlin에서 java 코드를 가져다 사용할 때 어떻게 처리할까
+
+
+> java 코드
+```java
+public class Person{
+    
+    private final String name;
+    
+    public Person(String name){
+        this. name = name;
+    }
+    @Nullable
+    public String getName(){
+        return name;
+    }
+}
+```
+
+> kotlin 코드
+```kotlin
+    fun main(){
+        val person = Person("이예나")
+    }
+    
+    fun startWithA(str: String):Boolean{
+        return str.startsWith("A")
+    }
+
+```
+
+결과: 오류 발생
+
+> java 코드
+```java
+public class Person{
+    
+    private final String name;
+    
+    public Person(String name){
+        this. name = name;
+    }
+    @NotNull
+    public String getName(){
+        return name;
+    }
+}
+```
+결과: kotlin메서 실행 가능
+
+> 플랫폼 타입: 코틀린에서 Null 관련 정보를 알 수 없는 타입 Runtime시 Exception이 날 수 있다
