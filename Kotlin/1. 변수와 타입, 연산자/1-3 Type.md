@@ -43,3 +43,55 @@ val number6: Long = number5 // Type mismatch
 
 println(number5 + number6)
 ```
+
+#### 타입 캐스팅
+    
+```java
+public static void printAgeIfPerson(Object obj){
+        if(obj instanceof Pserson){
+            Person person = (Person) obj;
+            System.out.println(person,getAge());
+        }
+    }
+```
+- instanceof: 변수가 주어진 타입이면 true, 그렇지 않으면 false
+- (타입): 주어진 변수를 해당 타입으로 변경한다
+
+
+```kotlin
+  fun printAgeIfPerson(obj: Any){
+       if (obj is Person){
+           val person = obj as Person
+           println(pserson.age)
+       }
+   }
+```
+- is: 자바의 instanceof
+- as Person: 자바의 (Person)obj, 생략가능
+
+> 스마트 캐스트
+```kotlin
+   fun printAgeIfPerson(obj: Any){
+       if (obj is Person){
+           println(pserson.age)
+       }
+   }
+
+```
+가능
+
+만약 null값이 들어간다면
+
+```kotlin
+   fun main(){
+        printAgeIfPerson(null)
+    }
+    
+   
+   fun printAgeIfPerson(obj: Any?){
+       val person = obj as? Person
+       println(person?.age)
+   }
+    
+```
+
