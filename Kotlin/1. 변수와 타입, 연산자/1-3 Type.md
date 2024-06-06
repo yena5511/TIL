@@ -121,3 +121,45 @@ fun fail(message: String): Nothing{
 }
 ```
 
+#### String interpolation/ String indexing
+
+>java
+```java
+val person = Person("이예나", 18)
+System.out.println(Sting.format("이름 : %s", person.name))
+```
+
+>kotlin
+```kotlin
+val person = Person("이예나", 18)
+println("이름 : ${person.name}")
+```
+- ${변수}를 사용하면 값이 들어간다
+
+```kotlin
+val name = "이예나"
+println("이름 : $name")
+```
+- $변수를 사용할 수도 있다 ( {}생략가능 )
+- 변수 이름만 사용하더라도 ${변수}를 사용하는 것이 더 좋다
+    - 가독성
+    - 일괄변환
+    - 정규식 활용
+
+
+> 여러 줄에 걸친 문자열 작성 큰따옴표 세 개("""""")
+```kotlin
+ val str = """
+          ABC
+          DEF
+          ${name}
+        """.trimIndent()
+        println(str)
+```
+
+> 특정 문자열 가져오기
+
+```kotlin
+val str = "abcd"
+val ch = str[1]
+```
