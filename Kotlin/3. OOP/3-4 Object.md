@@ -63,3 +63,47 @@ companion object, 즉 동반객체도 하나의 객체로 간주된다
             println("나는")
         }
     }
+```
+
+#### 싱글톤
+
+```kotlin
+fun main(){
+
+    println(Singleton.a)
+    Singleton.a += 10
+    println(Singleton.a)
+
+}
+
+
+object Singleton{
+    var a: Int = 0
+}
+```
+
+
+#### 익명 클래스
+        
+특정 인터페이스나 클래스를 상속받은 구현체를 일회성으로 사용할 때 쓰는 클래스
+
+```kotlin
+fun main(){
+    moveSomething(object : Movable {
+        override fun move(){
+            println("무브 무브")
+        }
+        
+        override fun fly(){
+            println("날다날다")
+        }
+    })
+}
+
+private fun moveSomething(movable: Movable){
+    movable.move()
+    movable.fly()
+}
+```
+
+Java에서는 new타입이름() Kotlin에서는 object : 타입이름
