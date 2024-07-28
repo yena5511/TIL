@@ -85,3 +85,59 @@ with(person){
     println(this.age)
 }
 ```
+
+#### 언제 어떤 scope function을 사용하야 할까
+
+> let: 하나 이상의 함수를 call chain결과로 호출 할 때
+
+```kotlin
+val string = listOf("APPLE", "CAR")
+string.map{it.length}
+    .filter { it > 3 }
+    .let { ::println }
+```
+
+> let: non-null 값에 대해서만 code block을 실행시킬 때
+    
+```kotlin
+val length = str?.let{
+    println(it.uppercase())
+    it.length
+}
+```
+
+>run: 객체 초기화와 반환 값의 게산을 동시에 해야 할 때
+
+```kotlin
+val person = Person("이예나", 100).run(personRepository::save)
+```
+- 객체를 만들어 DB에 바로 저장하고, 그 인스턴스를 활용할 떄
+
+apply 특징: 객체 그 자체가 반환된다
+    
+>apply: 객체 설정을 할 때에 객체를 수정하는 로직이 call chain중간에 필요 할 때
+
+```kotlin
+fun createPerson(
+    name: String,
+    age: Int,
+    hobby: String,
+): Person{
+    return Person(
+        name = name,
+        age = age
+    ).apply {
+        this.hobby = hobby
+    }
+}
+```
+
+also 특징: 객체 그 자체가 반환된다
+        
+> also: 객체를 수정하는 로직이 call chain 중간에 필요할 때
+
+```kotlin
+mutableListOf("one", "two", "three")
+    .also { println("four 추가 이전 지금 값: $it") }
+    .add("four")
+```
