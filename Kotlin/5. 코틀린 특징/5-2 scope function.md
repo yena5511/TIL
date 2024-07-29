@@ -141,3 +141,37 @@ mutableListOf("one", "two", "three")
     .also { println("four 추가 이전 지금 값: $it") }
     .add("four")
 ```
+
+> with:   특정 객체를 다른 객체로 변환해야 하는데, 모듈 간의 의존성에 의해 정적 팩토리 혹은 toClass 함수를 만들기 어려울 때
+
+```kotlin
+return with(person){
+    PersonDto(
+        name = name,
+        age = age,
+    )
+}
+```
+- this를 생략할 수 있어 필드가 많아도 코드가 간결해진다
+
+
+#### scope function과 가독성
+
+```kotlin
+// 1번 코드
+if (person != null && person.isAdult){
+    view.showPerson(person)
+}else{
+    view.showError()
+}
+        
+// 2번 코드
+person?.tokeIf{it.isAdult}
+    ?.let(view::showPerson)
+        ?: view.showError()
+```
+
+- 1번 코드: 전통적인 if와 else를 활용
+- 2번 코드: scope function을 활용한 코틀린스러운 코드
+
+사용 빈도가 적은 관용구는 코드를 더 복잡하게 만들고 이런 관용구들은 한 문장 내에서 조합해 사용하면 복잡성이 휠씬 증가한다        
